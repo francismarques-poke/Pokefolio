@@ -178,6 +178,27 @@
     border-radius: 12px; background: transparent; color: white; font-weight: 600; cursor: pointer;
   }
 
+  /* EDIT FORM */
+  .form-group { margin-top: 14px; text-align: left; }
+  .form-label { color: #8b949e; font-size: 13px; margin-bottom: 6px; display: block; }
+  .form-select, .form-input, .form-textarea {
+    width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #30363d;
+    background: #0d1117; color: white; font-size: 15px; outline: none; font-family: inherit;
+  }
+  .form-select:focus, .form-input:focus, .form-textarea:focus { border-color: #ffcb05; }
+  .form-textarea { resize: vertical; min-height: 70px; }
+  .edit-button {
+    width: 100%; padding: 13px; margin-top: 15px; border: 1px solid #30363d;
+    border-radius: 12px; background: #0d1117; color: #ffcb05; font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+  .edit-button:active { transform: scale(0.98); }
+  .save-button {
+    width: 100%; padding: 14px; margin-top: 15px; border: 0; border-radius: 12px;
+    background: #ffcc00; color: #111827; font-size: 16px; font-weight: bold; cursor: pointer;
+  }
+  .profit-positive { color: #3fb950; }
+  .profit-negative { color: #ff6b6b; }
+
   /* SETTINGS MENU */
   .settings-menu-button {
     width: 100%; padding: 14px; margin-top: 10px; border: 1px solid #30363d;
@@ -606,6 +627,38 @@ function openPortfolioCard(cardId) {
   const unitPrice = Number(card.price || 0);
   const totalValue = unitPrice * quantity;
 
+  const conditionRow = card.condition
+    ? `<div class="modal-info-row">
+         <span class="modal-label">Condição</span>
+         <strong>${card.condition}</strong>
+       </div>`
+    : "";
+
+  let investmentRows = "";
+  if (card.pricePaid != null && card.pricePaid !== "") {
+    const totalPaid = Number(card.pricePaid) * quantity;
+    const diff = totalValue - totalPaid;
+    const diffClass = diff >= 0 ? "profit-positive" : "profit-negative";
+    const sign = diff >= 0 ? "+" : "";
+    investmentRows = `
+      <div class="modal-info-row">
+        <span class="modal-label">Valor pago (total)</span>
+        <strong>${formatPrice(totalPaid)}</strong>
+      </div>
+      <div class="modal-info-row">
+        <span class="modal-label">Lucro / Perda</span>
+        <strong class="${diffClass}">${sign}${formatPrice(diff)}</strong>
+      </div>
+    `;
+  }
+
+  const notesBlock = card.notes
+    ? `<div class="modal-info" style="text-align:left;">
+         <span class="modal-label">Notas</span>
+         <p style="margin-top:6px;">${card.notes}</p>
+       </div>`
+    : "";
+
   const overlay = document.createElement("div");
   overlay.className = "modal-overlay";
   overlay.id = "card-modal";
@@ -630,8 +683,13 @@ function openPortfolioCard(cardId) {
           <span class="modal-label">Valor total</span>
           <strong style="color:#ffcb05;">${totalValue > 0 ? formatPrice(totalValue) : "Sem preço"}</strong>
         </div>
+        ${conditionRow}
+        ${investmentRows}
       </div>
 
+      ${notesBlock}
+
+      <button class="edit-button" onclick="editCard('${card.id}')">✏️ Editar carta</button>
       <button class="modal-close" onclick="closeCardModal()">Fechar</button>
     </div>
   `;
@@ -646,6 +704,102 @@ function openPortfolioCard(cardId) {
 function closeCardModal() {
   const modal = document.getElementById("card-modal");
   if (modal) modal.remove();
+}
+
+/* =====================================================
+   EDITAR CARTA — condição, valor pago, notas (novo)
+===================================================== */
+
+const CARD_CONDITIONS = [
+  "Não definida",
+  "Near Mint",
+  "Excellent",
+  "Good",
+  "Light Played",
+  "Moderately Played",
+  "Heavily Played",
+  "Damaged"
+];
+
+function editCard(cardId) {
+  const portfolio = getPortfolio();
+  const card = portfolio.find(item => item.id === cardId);
+  if (!card) return;
+
+  closeCardModal();
+
+  const conditionOptions = CARD_CONDITIONS.map(condition => {
+    const isSelected = (card.condition || "Não definida") === condition;
+    return `<option value="${condition}" ${isSelected ? "selected" : ""}>${condition}</option>`;
+  }).join("");
+
+  const overlay = document.createElement("div");
+  overlay.className = "modal-overlay";
+  overlay.id = "edit-modal";
+
+  overlay.innerHTML = `
+    <div class="modal">
+      <h2>✏️ Editar carta</h2>
+      <p class="modal-subtitle">${card.name}</p>
+
+      <div class="form-group">
+        <label class="form-label">Condição</label>
+        <select class="form-select" id="edit-condition">${conditionOptions}</select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Valor pago por unidade (€)</label>
+        <input class="form-input" id="edit-price-paid" type="number" step="0.01" min="0"
+          value="${card.pricePaid != null ? card.pricePaid : ""}" placeholder="Ex: 8.50">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Notas</label>
+        <textarea class="form-textarea" id="edit-notes" placeholder="Ex: PSA 9, comprada na Feira X...">${card.notes || ""}</textarea>
+      </div>
+
+      <button class="save-button" onclick="saveCardEdit('${cardId}')">💾 Guardar</button>
+      <button class="modal-close" onclick="closeEditModal(); openPortfolioCard('${cardId}');">Cancelar</button>
+    </div>
+  `;
+
+  overlay.addEventListener("click", function (event) {
+    if (event.target === overlay) {
+      closeEditModal();
+      openPortfolioCard(cardId);
+    }
+  });
+
+  document.body.appendChild(overlay);
+}
+
+function closeEditModal() {
+  const modal = document.getElementById("edit-modal");
+  if (modal) modal.remove();
+}
+
+function saveCardEdit(cardId) {
+  const portfolio = getPortfolio();
+  const card = portfolio.find(item => item.id === cardId);
+  if (!card) return;
+
+  const conditionField = document.getElementById("edit-condition");
+  const pricePaidField = document.getElementById("edit-price-paid");
+  const notesField = document.getElementById("edit-notes");
+
+  const condition = conditionField.value;
+  const pricePaidRaw = pricePaidField.value.trim();
+  const notes = notesField.value.trim();
+
+  card.condition = condition === "Não definida" ? "" : condition;
+  card.pricePaid = pricePaidRaw !== "" ? Number(pricePaidRaw) : null;
+  card.notes = notes;
+
+  savePortfolio(portfolio);
+  renderPortfolio();
+  closeEditModal();
+  showToast("Carta atualizada.", "success");
+  openPortfolioCard(cardId);
 }
 
 /* =====================================================
