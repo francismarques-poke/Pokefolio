@@ -235,13 +235,47 @@
 
   </div>
 
-  <script>
+ <script>
 
-    function scanCard() {
-      alert("📸 Scanner de cartas — em breve!");
-    }
+function scanCard() {
+  const input = document.createElement("input");
 
-  </script>
+  input.type = "file";
+  input.accept = "image/*";
+  input.setAttribute("capture", "environment");
+
+  input.onchange = function () {
+    if (!input.files || !input.files[0]) return;
+
+    const file = input.files[0];
+    const imageURL = URL.createObjectURL(file);
+
+    const preview = document.createElement("div");
+
+    preview.style.marginTop = "20px";
+    preview.style.padding = "20px";
+    preview.style.background = "#161b22";
+    preview.style.borderRadius = "20px";
+    preview.style.textAlign = "center";
+
+    preview.innerHTML = `
+      <h3>📸 Carta fotografada!</h3>
+      <img 
+        src="${imageURL}" 
+        style="max-width:100%; border-radius:12px; margin-top:10px;"
+      >
+      <p style="color:#9ca3af; margin-top:10px;">
+        Próximo passo: identificar a carta com IA.
+      </p>
+    `;
+
+    document.body.appendChild(preview);
+  };
+
+  input.click();
+}
+
+</script>
 
 </body>
 </html>
