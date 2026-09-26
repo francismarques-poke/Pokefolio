@@ -233,6 +233,12 @@
   @keyframes toast-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes toast-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(10px); } }
 
+  /* COLLECTION TOOLBAR (busca + ordenação) */
+  .collection-toolbar {
+    display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;
+  }
+  .collection-toolbar .search-input { margin-top: 0; }
+
   footer { text-align: center; color: #484f58; font-size: 12px; margin-top: 30px; }
 </style>
 </head>
@@ -277,6 +283,26 @@
 
   <h2 class="section-title">A minha coleção</h2>
 
+  <div class="collection-toolbar" id="collection-toolbar" style="display:none;">
+    <input
+      type="text"
+      class="search-input"
+      id="collection-search"
+      placeholder="🔎 Procurar na minha coleção"
+      autocomplete="off"
+      oninput="handleCollectionSearch()"
+    >
+    <select class="form-select" id="collection-sort" onchange="handleCollectionSort()">
+      <option value="default">Ordem original</option>
+      <option value="name-asc">Nome A-Z</option>
+      <option value="name-desc">Nome Z-A</option>
+      <option value="price-desc">Preço: maior → menor</option>
+      <option value="price-asc">Preço: menor → maior</option>
+      <option value="recent">Mais recentes primeiro</option>
+      <option value="oldest">Mais antigas primeiro</option>
+    </select>
+  </div>
+
   <section class="collection">
     <div class="empty">
       <div class="empty-icon">🃏</div>
@@ -293,6 +319,10 @@
 /* =====================================================
    UTILITÁRIOS
 ===================================================== */
+
+/* Estado da pesquisa/ordenação da coleção (não persistido) */
+let collectionSearchTerm = "";
+let collectionSortOrder = "default";
 
 function getPortfolio() {
   try {
@@ -571,7 +601,8 @@ function addToPortfolio() {
     rarity: card.rarity || "",
     image: card.image || "",
     price: price,
-    quantity: 1
+    quantity: 1,
+    dateAdded: Date.now()
   };
 
   portfolio.push(portfolioCard);
@@ -973,7 +1004,11 @@ function triggerImport() {
               rarity: imported.rarity || "",
               image: imported.image || "",
               price: Number(imported.price) || 0,
-              quantity: Number(imported.quantity) > 0 ? Number(imported.quantity) : 1
+              quantity: Number(imported.quantity) > 0 ? Number(imported.quantity) : 1,
+              condition: imported.condition || "",
+              pricePaid: imported.pricePaid != null ? Number(imported.pricePaid) : null,
+              notes: imported.notes || "",
+              dateAdded: imported.dateAdded || Date.now()
             });
             added++;
           }
@@ -1007,7 +1042,9 @@ function renderPortfolio() {
   const collection = document.querySelector(".collection");
   const cardsCount = document.getElementById("cards-count");
   const totalValue = document.getElementById("portfolio-value");
+  const toolbar = document.getElementById("collection-toolbar");
 
+  /* Estatísticas usam sempre a coleção completa, nunca a lista filtrada */
   const totalCards = portfolio.reduce((sum, card) => sum + Number(card.quantity || 1), 0);
   cardsCount.textContent = totalCards;
 
@@ -1019,7 +1056,10 @@ function renderPortfolio() {
 
   totalValue.textContent = formatPrice(total);
 
+  /* Coleção completamente vazia: esconder barra de pesquisa/ordenação */
   if (portfolio.length === 0) {
+    if (toolbar) toolbar.style.display = "none";
+
     collection.innerHTML = `
       <div class="empty">
         <div class="empty-icon">🃏</div>
@@ -1029,9 +1069,32 @@ function renderPortfolio() {
     return;
   }
 
+  if (toolbar) toolbar.style.display = "flex";
+
+  /* Aplicar pesquisa (por nome ou set) */
+  let visibleCards = portfolio.filter(card => {
+    if (!collectionSearchTerm) return true;
+    const name = (card.name || "").toLowerCase();
+    const set = (card.set || "").toLowerCase();
+    return name.includes(collectionSearchTerm) || set.includes(collectionSearchTerm);
+  });
+
+  /* Aplicar ordenação */
+  visibleCards = sortCards(visibleCards, collectionSortOrder);
+
+  if (visibleCards.length === 0) {
+    collection.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">🔎</div>
+        <p>Nenhuma carta encontrada com esses critérios.</p>
+      </div>
+    `;
+    return;
+  }
+
   collection.innerHTML = "";
 
-  portfolio.forEach(card => {
+  visibleCards.forEach(card => {
     const quantity = Number(card.quantity || 1);
     const image = card.image ? card.image + "/low.webp" : "";
 
@@ -1059,6 +1122,52 @@ function renderPortfolio() {
 
     collection.appendChild(cardElement);
   });
+}
+
+/* =====================================================
+   PESQUISA E ORDENAÇÃO DA COLEÇÃO (novo)
+===================================================== */
+
+function sortCards(cards, order) {
+  const sorted = [...cards];
+
+  switch (order) {
+    case "name-asc":
+      sorted.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+      break;
+    case "name-desc":
+      sorted.sort((a, b) => (b.name || "").localeCompare(a.name || ""));
+      break;
+    case "price-desc":
+      sorted.sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
+      break;
+    case "price-asc":
+      sorted.sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
+      break;
+    case "recent":
+      sorted.sort((a, b) => Number(b.dateAdded || 0) - Number(a.dateAdded || 0));
+      break;
+    case "oldest":
+      sorted.sort((a, b) => Number(a.dateAdded || 0) - Number(b.dateAdded || 0));
+      break;
+    default:
+      /* "default": mantém a ordem original guardada no localStorage */
+      break;
+  }
+
+  return sorted;
+}
+
+function handleCollectionSearch() {
+  const input = document.getElementById("collection-search");
+  collectionSearchTerm = input ? input.value.trim().toLowerCase() : "";
+  renderPortfolio();
+}
+
+function handleCollectionSort() {
+  const select = document.getElementById("collection-sort");
+  collectionSortOrder = select ? select.value : "default";
+  renderPortfolio();
 }
 
 /* =====================================================
