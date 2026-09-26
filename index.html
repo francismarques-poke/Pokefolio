@@ -177,8 +177,14 @@
 
     <section class="welcome">
       <h1>A tua coleção.</h1>
-      <p>Organiza, acompanha e descobre o valor das tuas cartas.</p>
+
+      <p>
+        Organiza, acompanha e descobre o valor das tuas cartas.
+      </p>
     </section>
+
+
+    <!-- SCANNER -->
 
     <section class="scan-card">
 
@@ -190,35 +196,71 @@
         Fotografa uma carta e deixa o PokéPortfolio identificá-la.
       </p>
 
-      <button class="scan-button" onclick="scanCard()">
+      <button
+        class="scan-button"
+        onclick="scanCard()"
+      >
         📷 Digitalizar carta
       </button>
 
     </section>
 
-    <h2 class="section-title">O teu portfólio</h2>
+
+    <!-- ESTATÍSTICAS -->
+
+    <h2 class="section-title">
+      O teu portfólio
+    </h2>
 
     <section class="stats">
 
       <div class="stat">
-        <div class="stat-label">Cartas</div>
-        <div class="stat-value">0</div>
+
+        <div class="stat-label">
+          Cartas
+        </div>
+
+        <div
+          class="stat-value"
+          id="cards-count"
+        >
+          0
+        </div>
+
       </div>
 
+
       <div class="stat">
-        <div class="stat-label">Valor estimado</div>
-        <div class="stat-value">€0,00</div>
+
+        <div class="stat-label">
+          Valor estimado
+        </div>
+
+        <div
+          class="stat-value"
+          id="portfolio-value"
+        >
+          €0,00
+        </div>
+
       </div>
 
     </section>
 
-    <h2 class="section-title">A minha coleção</h2>
+
+    <!-- COLEÇÃO -->
+
+    <h2 class="section-title">
+      A minha coleção
+    </h2>
 
     <section class="collection">
 
       <div class="empty">
 
-        <div class="empty-icon">🃏</div>
+        <div class="empty-icon">
+          🃏
+        </div>
 
         <p>
           Ainda não tens cartas na tua coleção.<br>
@@ -229,48 +271,96 @@
 
     </section>
 
+
     <footer>
       PokéPortfolio · Projeto em desenvolvimento
     </footer>
 
   </div>
 
+
   <script>
+
+
+    /*
+    ==========================================
+    SCANNER
+    ==========================================
+    */
 
     function scanCard() {
 
-      const input = document.createElement("input");
+      const input =
+        document.createElement("input");
 
       input.type = "file";
+
       input.accept = "image/*";
-      input.setAttribute("capture", "environment");
+
+      input.setAttribute(
+        "capture",
+        "environment"
+      );
+
 
       input.onchange = function () {
 
-        if (!input.files || !input.files[0]) return;
+        if (
+          !input.files ||
+          !input.files[0]
+        ) {
+          return;
+        }
 
-        const file = input.files[0];
-        const imageURL = URL.createObjectURL(file);
 
-        let oldPreview = document.getElementById("scanner-preview");
+        const file =
+          input.files[0];
+
+        const imageURL =
+          URL.createObjectURL(file);
+
+
+        let oldPreview =
+          document.getElementById(
+            "scanner-preview"
+          );
+
 
         if (oldPreview) {
           oldPreview.remove();
         }
 
-        const preview = document.createElement("div");
 
-        preview.id = "scanner-preview";
+        const preview =
+          document.createElement("div");
 
-        preview.style.marginTop = "20px";
-        preview.style.padding = "20px";
-        preview.style.background = "#161b22";
-        preview.style.borderRadius = "20px";
-        preview.style.textAlign = "center";
+
+        preview.id =
+          "scanner-preview";
+
+
+        preview.style.marginTop =
+          "20px";
+
+        preview.style.padding =
+          "20px";
+
+        preview.style.background =
+          "#161b22";
+
+        preview.style.borderRadius =
+          "20px";
+
+        preview.style.textAlign =
+          "center";
+
 
         preview.innerHTML = `
 
-          <h3>📸 Carta fotografada!</h3>
+          <h3>
+            📸 Carta fotografada!
+          </h3>
+
 
           <img
             src="${imageURL}"
@@ -281,22 +371,31 @@
             "
           >
 
-          <div style="
-            margin-top:20px;
-            padding-top:20px;
-            border-top:1px solid #30363d;
-          ">
 
-            <h3>🔎 Identificar carta</h3>
+          <div
+            style="
+              margin-top:20px;
+              padding-top:20px;
+              border-top:1px solid #30363d;
+            "
+          >
 
-            <p style="
-              color:#9ca3af;
-              margin-top:8px;
-              margin-bottom:10px;
-            ">
+            <h3>
+              🔎 Identificar carta
+            </h3>
+
+
+            <p
+              style="
+                color:#9ca3af;
+                margin-top:8px;
+                margin-bottom:10px;
+              "
+            >
               Por enquanto, escreve o nome da carta.
               Em breve vamos automatizar esta parte com IA.
             </p>
+
 
             <input
               id="card-search"
@@ -314,6 +413,7 @@
                 margin-top:10px;
               "
             >
+
 
             <button
               onclick="searchCard()"
@@ -333,44 +433,78 @@
               🔍 Procurar carta
             </button>
 
+
             <div id="search-results"></div>
 
           </div>
         `;
 
-        document.body.appendChild(preview);
+
+        document.body.appendChild(
+          preview
+        );
+
       };
 
+
       input.click();
+
     }
 
 
+
+    /*
+    ==========================================
+    PESQUISAR CARTA
+    ==========================================
+    */
+
     async function searchCard() {
 
-      const input = document.getElementById("card-search");
-      const results = document.getElementById("search-results");
+      const input =
+        document.getElementById(
+          "card-search"
+        );
 
-      const name = input.value.trim();
+
+      const results =
+        document.getElementById(
+          "search-results"
+        );
+
+
+      const name =
+        input.value.trim();
+
 
       if (!name) {
 
         results.innerHTML = `
-          <p style="
-            color:#ff6b6b;
-            margin-top:15px;
-          ">
+
+          <p
+            style="
+              color:#ff6b6b;
+              margin-top:15px;
+            "
+          >
             Escreve primeiro o nome da carta.
           </p>
+
         `;
 
         return;
+
       }
 
+
       results.innerHTML = `
+
         <p style="margin-top:15px;">
           🔄 A procurar na base de dados...
         </p>
+
       `;
+
 
       try {
 
@@ -378,231 +512,419 @@
           "https://api.tcgdex.net/v2/en/cards?name=" +
           encodeURIComponent(name);
 
-        const response = await fetch(url);
+
+        const response =
+          await fetch(url);
+
 
         if (!response.ok) {
-          throw new Error("Erro na API");
+          throw new Error(
+            "Erro na API"
+          );
         }
 
-        const cards = await response.json();
 
-        if (!cards || cards.length === 0) {
+        const cards =
+          await response.json();
+
+
+        if (
+          !cards ||
+          cards.length === 0
+        ) {
 
           results.innerHTML = `
-            <p style="
-              color:#ff6b6b;
-              margin-top:15px;
-            ">
+
+            <p
+              style="
+                color:#ff6b6b;
+                margin-top:15px;
+              "
+            >
               ❌ Não encontrei nenhuma carta com esse nome.
             </p>
+
           `;
 
           return;
+
         }
 
+
         results.innerHTML = `
-          <h3 style="margin-top:20px;">
+
+          <h3
+            style="
+              margin-top:20px;
+            "
+          >
             🃏 Resultados encontrados
           </h3>
+
         `;
 
-        cards.slice(0, 8).forEach(card => {
 
-          const cardElement = document.createElement("div");
+        cards
+          .slice(0, 8)
+          .forEach(card => {
 
-          cardElement.style.marginTop = "15px";
-          cardElement.style.padding = "12px";
-          cardElement.style.background = "#0d1117";
-          cardElement.style.border = "1px solid #30363d";
-          cardElement.style.borderRadius = "16px";
-          cardElement.style.cursor = "pointer";
 
-          const image = card.image
-            ? card.image + "/low.webp"
-            : "";
+            const cardElement =
+              document.createElement("div");
 
-          cardElement.innerHTML = `
 
-            <div style="
-              display:flex;
-              align-items:center;
-              gap:12px;
-            ">
+            cardElement.style.marginTop =
+              "15px";
 
-              ${
-                image
-                ? `<img
-                    src="${image}"
+            cardElement.style.padding =
+              "12px";
+
+            cardElement.style.background =
+              "#0d1117";
+
+            cardElement.style.border =
+              "1px solid #30363d";
+
+            cardElement.style.borderRadius =
+              "16px";
+
+            cardElement.style.cursor =
+              "pointer";
+
+
+            const image =
+              card.image
+                ? card.image + "/low.webp"
+                : "";
+
+
+            cardElement.innerHTML = `
+
+              <div
+                style="
+                  display:flex;
+                  align-items:center;
+                  gap:12px;
+                "
+              >
+
+                ${
+                  image
+                    ? `
+                      <img
+                        src="${image}"
+                        style="
+                          width:70px;
+                          border-radius:8px;
+                        "
+                      >
+                    `
+                    : ""
+                }
+
+
+                <div
+                  style="
+                    text-align:left;
+                  "
+                >
+
+                  <strong
                     style="
-                      width:70px;
-                      border-radius:8px;
+                      font-size:16px;
                     "
-                  >`
-                : ""
-              }
+                  >
+                    ${card.name}
+                  </strong>
 
-              <div style="text-align:left;">
 
-                <strong style="font-size:16px;">
-                  ${card.name}
-                </strong>
+                  <div
+                    style="
+                      color:#9ca3af;
+                      margin-top:5px;
+                    "
+                  >
+                    ${card.id}
+                  </div>
 
-                <div style="
-                  color:#9ca3af;
-                  margin-top:5px;
-                ">
-                  ${card.id}
                 </div>
 
               </div>
 
-            </div>
-          `;
+            `;
 
-          cardElement.onclick = () => loadCard(card.id);
 
-          results.appendChild(cardElement);
+            cardElement.onclick =
+              () => loadCard(card.id);
 
-        });
+
+            results.appendChild(
+              cardElement
+            );
+
+          });
+
 
       } catch (error) {
 
         console.error(error);
 
+
         results.innerHTML = `
-          <p style="
-            color:#ff6b6b;
-            margin-top:15px;
-          ">
-            ⚠️ Não foi possível contactar a base de dados.
+
+          <p
+            style="
+              color:#ff6b6b;
+              margin-top:15px;
+            "
+          >
+            ⚠️ Não foi possível contactar
+            a base de dados.
             Tenta novamente.
           </p>
+
         `;
+
       }
+
     }
 
 
+
+    /*
+    ==========================================
+    CARREGAR CARTA
+    ==========================================
+    */
+
     async function loadCard(cardId) {
 
-      const results = document.getElementById("search-results");
+      const results =
+        document.getElementById(
+          "search-results"
+        );
+
 
       results.innerHTML = `
+
         <p style="margin-top:15px;">
           🔄 A carregar informação da carta...
         </p>
+
       `;
+
 
       try {
 
-        const response = await fetch(
-          "https://api.tcgdex.net/v2/en/cards/" +
-          encodeURIComponent(cardId)
-        );
+        const response =
+          await fetch(
+            "https://api.tcgdex.net/v2/en/cards/" +
+            encodeURIComponent(cardId)
+          );
+
 
         if (!response.ok) {
-          throw new Error("Erro ao carregar carta");
+          throw new Error(
+            "Erro ao carregar carta"
+          );
         }
 
-        const card = await response.json();
+
+        const card =
+          await response.json();
+
+
+        /*
+        Guardamos a carta selecionada
+        para o botão "Adicionar".
+        */
+
+        window.selectedCard =
+          card;
+
 
         const market =
           card.pricing &&
           card.pricing.cardmarket;
 
+
         const price =
-          market && market.avg != null
+          market &&
+          market.avg != null
+
             ? market.avg.toFixed(2) + " €"
+
             : "Sem preço disponível";
 
+
         const trend =
-          market && market.trend != null
+          market &&
+          market.trend != null
+
             ? market.trend.toFixed(2) + " €"
+
             : "—";
+
 
         const avg7 =
-          market && market.avg7 != null
+          market &&
+          market.avg7 != null
+
             ? market.avg7.toFixed(2) + " €"
+
             : "—";
 
+
         const avg30 =
-          market && market.avg30 != null
+          market &&
+          market.avg30 != null
+
             ? market.avg30.toFixed(2) + " €"
+
             : "—";
+
 
         const image =
           card.image
             ? card.image + "/high.webp"
             : "";
 
+
         results.innerHTML = `
 
-          <div style="
-            margin-top:20px;
-            padding:20px;
-            background:#161b22;
-            border-radius:20px;
-          ">
+          <div
+            style="
+              margin-top:20px;
+              padding:20px;
+              background:#161b22;
+              border-radius:20px;
+              text-align:center;
+            "
+          >
+
 
             ${
               image
-              ? `<img
-                  src="${image}"
-                  style="
-                    width:180px;
-                    max-width:70%;
-                    border-radius:12px;
-                  "
-                >`
-              : ""
+                ? `
+                  <img
+                    src="${image}"
+                    style="
+                      width:180px;
+                      max-width:70%;
+                      border-radius:12px;
+                    "
+                  >
+                `
+                : ""
             }
 
-            <h2 style="margin-top:15px;">
+
+            <h2
+              style="
+                margin-top:15px;
+              "
+            >
               ${card.name}
             </h2>
 
-            <p style="
-              color:#9ca3af;
-              margin-top:6px;
-            ">
-              ${card.set ? card.set.name : ""}
-              · ${card.localId || ""}
+
+            <p
+              style="
+                color:#9ca3af;
+                margin-top:6px;
+              "
+            >
+              ${
+                card.set
+                  ? card.set.name
+                  : ""
+              }
+
+              ·
+
+              ${
+                card.localId || ""
+              }
             </p>
 
-            <p style="margin-top:8px;">
-              ⭐ ${card.rarity || "Raridade desconhecida"}
+
+            <p
+              style="
+                margin-top:8px;
+              "
+            >
+              ⭐
+              ${
+                card.rarity ||
+                "Raridade desconhecida"
+              }
             </p>
 
-            <div style="
-              margin-top:20px;
-              padding:15px;
-              background:#0d1117;
-              border-radius:15px;
-              text-align:left;
-            ">
 
-              <h3>💰 Cardmarket</h3>
+            <div
+              style="
+                margin-top:20px;
+                padding:15px;
+                background:#0d1117;
+                border-radius:15px;
+                text-align:left;
+              "
+            >
 
-              <p style="margin-top:10px;">
+              <h3>
+                💰 Cardmarket
+              </h3>
+
+
+              <p
+                style="
+                  margin-top:10px;
+                "
+              >
                 Média:
-                <strong>${price}</strong>
+                <strong>
+                  ${price}
+                </strong>
               </p>
 
-              <p style="margin-top:6px;">
+
+              <p
+                style="
+                  margin-top:6px;
+                "
+              >
                 Tendência:
-                <strong>${trend}</strong>
+                <strong>
+                  ${trend}
+                </strong>
               </p>
 
-              <p style="margin-top:6px;">
+
+              <p
+                style="
+                  margin-top:6px;
+                "
+              >
                 Média 7 dias:
-                <strong>${avg7}</strong>
+                <strong>
+                  ${avg7}
+                </strong>
               </p>
 
-              <p style="margin-top:6px;">
+
+              <p
+                style="
+                  margin-top:6px;
+                "
+              >
                 Média 30 dias:
-                <strong>${avg30}</strong>
+                <strong>
+                  ${avg30}
+                </strong>
               </p>
 
             </div>
+
 
             <button
               onclick="addToPortfolio()"
@@ -622,32 +944,412 @@
               ➕ Adicionar ao meu portfólio
             </button>
 
+
           </div>
+
         `;
+
 
       } catch (error) {
 
         console.error(error);
 
+
         results.innerHTML = `
-          <p style="
-            color:#ff6b6b;
-            margin-top:15px;
-          ">
-            ⚠️ Não foi possível carregar os dados desta carta.
+
+          <p
+            style="
+              color:#ff6b6b;
+              margin-top:15px;
+            "
+          >
+            ⚠️ Não foi possível carregar
+            os dados desta carta.
           </p>
+
         `;
+
       }
+
     }
 
+
+
+    /*
+    ==========================================
+    ADICIONAR CARTA AO PORTFÓLIO
+    ==========================================
+    */
 
     function addToPortfolio() {
 
+      const card =
+        window.selectedCard;
+
+
+      if (!card) {
+
+        alert(
+          "⚠️ Nenhuma carta selecionada."
+        );
+
+        return;
+
+      }
+
+
+      /*
+      Recuperar portfólio existente
+      */
+
+      let portfolio =
+        JSON.parse(
+          localStorage.getItem(
+            "pokePortfolio"
+          )
+        ) || [];
+
+
+      /*
+      Verificar se a carta
+      já existe
+      */
+
+      const alreadyExists =
+        portfolio.some(
+          item => item.id === card.id
+        );
+
+
+      if (alreadyExists) {
+
+        alert(
+          "⚠️ Esta carta já está no teu portfólio."
+        );
+
+        return;
+
+      }
+
+
+      /*
+      Obter preço atual
+      */
+
+      const market =
+        card.pricing &&
+        card.pricing.cardmarket;
+
+
+      const price =
+        market &&
+        market.avg != null
+
+          ? Number(market.avg)
+
+          : 0;
+
+
+      /*
+      Criar objeto da carta
+      */
+
+      const portfolioCard = {
+
+        id: card.id,
+
+        name: card.name,
+
+        set:
+          card.set
+            ? card.set.name
+            : "",
+
+        localId:
+          card.localId || "",
+
+        rarity:
+          card.rarity || "",
+
+        image:
+          card.image || "",
+
+        price:
+          price
+
+      };
+
+
+      /*
+      Adicionar ao portfólio
+      */
+
+      portfolio.push(
+        portfolioCard
+      );
+
+
+      /*
+      Guardar no navegador
+      */
+
+      localStorage.setItem(
+        "pokePortfolio",
+        JSON.stringify(portfolio)
+      );
+
+
+      /*
+      Atualizar interface
+      */
+
+      renderPortfolio();
+
+
       alert(
-        "🗂️ Excelente! A função de guardar cartas no portfólio será a próxima etapa."
+        "✅ Carta adicionada ao teu portfólio!"
       );
 
     }
+
+
+
+    /*
+    ==========================================
+    MOSTRAR PORTFÓLIO
+    ==========================================
+    */
+
+    function renderPortfolio() {
+
+      const portfolio =
+        JSON.parse(
+          localStorage.getItem(
+            "pokePortfolio"
+          )
+        ) || [];
+
+
+      const collection =
+        document.querySelector(
+          ".collection"
+        );
+
+
+      const cardsCount =
+        document.getElementById(
+          "cards-count"
+        );
+
+
+      const totalValue =
+        document.getElementById(
+          "portfolio-value"
+        );
+
+
+      /*
+      Atualizar quantidade
+      */
+
+      cardsCount.textContent =
+        portfolio.length;
+
+
+      /*
+      Calcular valor total
+      */
+
+      const total =
+        portfolio.reduce(
+          (sum, card) =>
+            sum +
+            (Number(card.price) || 0),
+          0
+        );
+
+
+      totalValue.textContent =
+        total
+          .toFixed(2)
+          .replace(".", ",") +
+        " €";
+
+
+      /*
+      Se não houver cartas
+      */
+
+      if (
+        portfolio.length === 0
+      ) {
+
+        collection.innerHTML = `
+
+          <div class="empty">
+
+            <div class="empty-icon">
+              🃏
+            </div>
+
+            <p>
+              Ainda não tens cartas
+              na tua coleção.<br>
+
+              Digitaliza a tua primeira
+              carta para começar.
+            </p>
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      /*
+      Limpar coleção
+      */
+
+      collection.innerHTML = "";
+
+
+      /*
+      Mostrar cada carta
+      */
+
+      portfolio.forEach(
+        card => {
+
+          const cardElement =
+            document.createElement(
+              "div"
+            );
+
+
+          cardElement.style.display =
+            "flex";
+
+          cardElement.style.alignItems =
+            "center";
+
+          cardElement.style.gap =
+            "15px";
+
+          cardElement.style.padding =
+            "12px";
+
+          cardElement.style.marginBottom =
+            "12px";
+
+          cardElement.style.background =
+            "#0d1117";
+
+          cardElement.style.border =
+            "1px solid #30363d";
+
+          cardElement.style.borderRadius =
+            "15px";
+
+
+          const image =
+            card.image
+              ? card.image +
+                "/low.webp"
+              : "";
+
+
+          cardElement.innerHTML = `
+
+            ${
+              image
+                ? `
+                  <img
+                    src="${image}"
+                    style="
+                      width:70px;
+                      border-radius:8px;
+                    "
+                  >
+                `
+                : ""
+            }
+
+
+            <div
+              style="
+                text-align:left;
+                flex:1;
+              "
+            >
+
+              <strong
+                style="
+                  font-size:16px;
+                "
+              >
+                ${card.name}
+              </strong>
+
+
+              <div
+                style="
+                  color:#9ca3af;
+                  font-size:13px;
+                  margin-top:5px;
+                "
+              >
+                ${card.set}
+              </div>
+
+
+              <div
+                style="
+                  color:#ffcb05;
+                  font-weight:bold;
+                  margin-top:5px;
+                "
+              >
+
+                ${
+                  card.price > 0
+
+                    ? card.price
+                        .toFixed(2)
+                        .replace(".", ",") +
+                      " €"
+
+                    : "Sem preço"
+                }
+
+              </div>
+
+            </div>
+
+          `;
+
+
+          collection.appendChild(
+            cardElement
+          );
+
+        }
+      );
+
+    }
+
+
+
+    /*
+    ==========================================
+    INICIAR PORTFÓLIO
+    ==========================================
+    */
+
+    renderPortfolio();
+
 
   </script>
 
