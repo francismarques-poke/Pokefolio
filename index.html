@@ -6,254 +6,333 @@
 <title>PokéPortfolio</title>
 
 <style>
+  :root {
+    --bg: #07080b;
+    --panel: #12151c;
+    --panel-soft: #0d0f15;
+    --border: #232838;
+    --border-hover: #34405a;
+    --text: #f2f4f8;
+    --text-muted: #8891a3;
+    --blue: #4f8fe8;
+    --blue-dim: #2c4d80;
+    --blue-glow: rgba(79, 143, 232, 0.18);
+    --red: #ef4444;
+    --red-dim: #9c2b2b;
+    --green: #3fb950;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #0d1117;
-    color: white;
+    background: var(--bg);
+    color: var(--text);
     min-height: 100vh;
   }
   button { font-family: inherit; }
-  .app { max-width: 500px; margin: auto; padding: 24px 18px 40px; }
+  .app { max-width: 500px; margin: auto; padding: 24px 18px 110px; }
 
   /* HEADER */
-  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-  .logo { font-size: 24px; font-weight: 800; }
-  .logo span { color: #ffcb05; }
+  header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 26px; }
+  .logo { font-size: 24px; font-weight: 800; letter-spacing: 0.2px; }
+  .logo span { color: var(--blue); }
   .profile {
     width: 42px; height: 42px; border-radius: 50%;
-    background: #1f2937;
+    background: var(--panel); border: 1px solid var(--border);
     display: flex; align-items: center; justify-content: center;
     font-size: 20px; cursor: pointer;
-    transition: background 0.15s ease;
+    transition: border-color 0.15s ease;
   }
-  .profile:active { background: #2a3644; }
+  .profile:active { border-color: var(--blue); }
 
   /* WELCOME */
-  .welcome { margin-bottom: 24px; }
-  .welcome h1 { font-size: 30px; margin-bottom: 8px; }
-  .welcome p { color: #8b949e; font-size: 15px; line-height: 1.5; }
+  .welcome { margin-bottom: 22px; }
+  .welcome h1 { font-size: 28px; margin-bottom: 6px; }
+  .welcome p { color: var(--text-muted); font-size: 15px; line-height: 1.5; }
 
-  /* SCANNER CARD */
-  .scan-card {
-    background: linear-gradient(135deg, #ffcb05, #f59e0b);
-    color: #111827; border-radius: 22px; padding: 25px; margin-bottom: 24px;
-    box-shadow: 0 10px 30px rgba(255, 203, 5, 0.12);
+  /* VALUE OVERVIEW (dashboard) */
+  .value-overview {
+    background: linear-gradient(165deg, var(--panel), var(--panel-soft));
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 0 1px rgba(79,143,232,0.04), 0 12px 30px rgba(0,0,0,0.35);
   }
-  .scan-icon { font-size: 42px; margin-bottom: 12px; }
-  .scan-card h2 { font-size: 22px; margin-bottom: 7px; }
-  .scan-card p { font-size: 14px; margin-bottom: 18px; opacity: 0.8; line-height: 1.5; }
+  .value-overview-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .value-overview-label { color: var(--text-muted); font-size: 13px; display: flex; align-items: center; gap: 6px; }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+    box-shadow: 0 0 6px var(--green); display: inline-block;
+  }
+  .value-overview-amount { font-size: 34px; font-weight: 800; margin-top: 8px; margin-bottom: 6px; letter-spacing: -0.5px; }
+  .value-overview-delta { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; font-weight: 600; }
+  .value-overview-delta.profit-positive { color: var(--green); }
+  .value-overview-delta.profit-negative { color: var(--red); }
+  .value-chart-wrap { margin-top: 4px; }
+  .value-chart-svg { width: 100%; height: 84px; display: block; }
+  .chart-empty { text-align: center; color: var(--text-muted); font-size: 13px; padding: 26px 10px; }
+  .chart-range {
+    display: flex; gap: 6px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);
+  }
+  .chart-range-btn {
+    flex: 1; background: var(--panel-soft); border: 1px solid var(--border); color: var(--text-muted);
+    padding: 7px; border-radius: 9px; font-size: 12px; font-weight: 700; cursor: pointer;
+  }
+  .chart-range-btn.active { background: var(--blue-dim); color: var(--text); border-color: var(--blue); }
+
+  /* SCANNER CARD (hero CTA) */
+  .scan-card {
+    background: linear-gradient(135deg, #1a1006, var(--panel));
+    border: 1px solid var(--red-dim);
+    color: var(--text); border-radius: 22px; padding: 25px; margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(239, 68, 68, 0.08);
+  }
+  .scan-icon { font-size: 40px; margin-bottom: 10px; }
+  .scan-card h2 { font-size: 21px; margin-bottom: 6px; }
+  .scan-card p { font-size: 14px; margin-bottom: 16px; color: var(--text-muted); line-height: 1.5; }
   .scan-button {
-    border: none; background: #111827; color: white; width: 100%;
+    border: none; background: linear-gradient(135deg, var(--red), var(--red-dim)); color: white; width: 100%;
     padding: 14px; border-radius: 13px; font-size: 16px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 8px 20px rgba(239,68,68,0.28);
   }
   .scan-button:active { transform: scale(0.98); }
 
   #scanner-area { width: 100%; }
   .scanner-preview {
-    background: #161b22; border: 1px solid #30363d; border-radius: 20px;
-    padding: 20px; margin-bottom: 28px; text-align: center;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 20px;
+    padding: 20px; margin-bottom: 20px; text-align: center;
   }
   .scanner-preview h3 { font-size: 20px; }
   .scanner-image {
     display: block; width: 100%; max-height: 500px; object-fit: contain;
     border-radius: 12px; margin: 15px auto 0;
   }
-  .scanner-identify { margin-top: 20px; padding-top: 20px; border-top: 1px solid #30363d; }
-  .scanner-identify p { color: #9ca3af; margin-top: 8px; margin-bottom: 10px; font-size: 14px; line-height: 1.5; }
+  .scanner-identify { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .scanner-identify p { color: var(--text-muted); margin-top: 8px; margin-bottom: 10px; font-size: 14px; line-height: 1.5; }
 
   .search-input {
-    width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #30363d;
-    background: #0d1117; color: white; font-size: 16px; margin-top: 10px; outline: none;
+    width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--border);
+    background: var(--panel-soft); color: var(--text); font-size: 16px; margin-top: 10px; outline: none;
   }
-  .search-input:focus { border-color: #ffcb05; }
+  .search-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-glow); }
   .search-button {
     width: 100%; padding: 14px; margin-top: 10px; border: 0; border-radius: 12px;
-    background: #ffcc00; color: #111827; font-size: 16px; font-weight: bold; cursor: pointer;
+    background: var(--blue); color: #07141f; font-size: 16px; font-weight: bold; cursor: pointer;
   }
   .close-scanner {
-    width: 100%; padding: 11px; margin-top: 10px; border: 1px solid #30363d;
-    border-radius: 12px; background: transparent; color: #9ca3af; font-size: 14px; cursor: pointer;
+    width: 100%; padding: 11px; margin-top: 10px; border: 1px solid var(--border);
+    border-radius: 12px; background: transparent; color: var(--text-muted); font-size: 14px; cursor: pointer;
   }
 
-  .section-title { font-size: 19px; margin-bottom: 12px; }
+  .section-title { font-size: 19px; margin-bottom: 12px; font-weight: 800; }
 
   /* STATS */
   .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-  .stat { background: #161b22; border: 1px solid #30363d; border-radius: 16px; padding: 18px; }
-  .stat-label { color: #8b949e; font-size: 13px; margin-bottom: 7px; }
+  .stat { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 18px; }
+  .stat-label { color: var(--text-muted); font-size: 13px; margin-bottom: 7px; }
   .stat-value { font-size: 23px; font-weight: 800; }
 
   .refresh-prices-link {
-    display: block; text-align: center; color: #8b949e; font-size: 13px;
-    background: none; border: none; width: 100%; padding: 8px; margin-bottom: 24px;
+    display: block; text-align: center; color: var(--text-muted); font-size: 13px;
+    background: none; border: none; width: 100%; padding: 8px; margin-bottom: 10px;
     cursor: pointer; text-decoration: underline;
   }
 
+  /* COLLECTION TOOLBAR */
+  .collection-toolbar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .collection-toolbar .search-input { margin-top: 0; }
+
   /* COLLECTION */
-  .collection { background: #161b22; border: 1px solid #30363d; border-radius: 18px; padding: 14px; }
-  .empty { text-align: center; padding: 25px 10px; color: #8b949e; }
+  .collection { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 14px; }
+  .empty { text-align: center; padding: 25px 10px; color: var(--text-muted); }
   .empty-icon { font-size: 40px; margin-bottom: 10px; }
   .empty p { font-size: 14px; line-height: 1.5; }
 
   .portfolio-card {
     display: flex; align-items: center; gap: 12px; padding: 12px; margin-bottom: 10px;
-    background: #0d1117; border: 1px solid #30363d; border-radius: 15px; cursor: pointer;
+    background: var(--panel-soft); border: 1px solid var(--border); border-radius: 15px; cursor: pointer;
     transition: transform 0.15s ease, border-color 0.15s ease;
   }
   .portfolio-card:last-child { margin-bottom: 0; }
   .portfolio-card:active { transform: scale(0.98); }
-  .portfolio-card:hover { border-color: #555f6d; }
+  .portfolio-card:hover { border-color: var(--border-hover); }
   .portfolio-card-image { width: 68px; flex-shrink: 0; border-radius: 8px; display: block; }
   .portfolio-card-info { flex: 1; min-width: 0; }
   .portfolio-card-name {
     font-size: 16px; font-weight: 700; display: block;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .portfolio-card-set { color: #9ca3af; font-size: 13px; margin-top: 4px; }
-  .portfolio-card-price { color: #ffcb05; font-weight: bold; margin-top: 5px; }
+  .portfolio-card-set { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
+  .portfolio-card-price { color: var(--blue); font-weight: bold; margin-top: 5px; }
 
   .quantity-box { display: flex; align-items: center; gap: 5px; margin-top: 8px; }
   .quantity-button {
-    width: 28px; height: 28px; border: 1px solid #30363d; border-radius: 8px;
-    background: #161b22; color: white; font-size: 17px; cursor: pointer;
+    width: 28px; height: 28px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--panel); color: var(--text); font-size: 17px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
   }
   .quantity-number { min-width: 24px; text-align: center; font-size: 14px; font-weight: 700; }
 
   .delete-button {
-    width: 32px; height: 32px; flex-shrink: 0; border: 1px solid #30363d; border-radius: 9px;
-    background: #161b22; color: #ff6b6b; font-size: 16px; cursor: pointer;
+    width: 32px; height: 32px; flex-shrink: 0; border: 1px solid var(--border); border-radius: 9px;
+    background: var(--panel); color: var(--red); font-size: 16px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
   }
 
   /* SEARCH RESULTS */
   .search-results-title { margin-top: 20px; }
   .search-result {
-    margin-top: 15px; padding: 12px; background: #0d1117; border: 1px solid #30363d;
+    margin-top: 15px; padding: 12px; background: var(--panel-soft); border: 1px solid var(--border);
     border-radius: 16px; cursor: pointer; transition: transform 0.15s ease, border-color 0.15s ease;
   }
   .search-result:active { transform: scale(0.98); }
-  .search-result:hover { border-color: #555f6d; }
+  .search-result:hover { border-color: var(--border-hover); }
   .search-result-content { display: flex; align-items: center; gap: 12px; }
   .search-result-image { width: 70px; border-radius: 8px; flex-shrink: 0; }
   .search-result-info { text-align: left; min-width: 0; }
   .search-result-name { font-size: 16px; font-weight: 700; }
-  .search-result-id { color: #9ca3af; margin-top: 5px; font-size: 13px; }
+  .search-result-id { color: var(--text-muted); margin-top: 5px; font-size: 13px; }
 
   /* CARD DETAILS */
-  .card-details { margin-top: 20px; padding: 20px; background: #161b22; border-radius: 20px; text-align: center; }
+  .card-details { margin-top: 20px; padding: 20px; background: var(--panel); border-radius: 20px; text-align: center; }
   .card-details-image { width: 180px; max-width: 70%; border-radius: 12px; }
-  .card-details-subtitle { color: #9ca3af; margin-top: 6px; line-height: 1.4; }
-  .market-box { margin-top: 20px; padding: 15px; background: #0d1117; border-radius: 15px; text-align: left; }
+  .card-details-subtitle { color: var(--text-muted); margin-top: 6px; line-height: 1.4; }
+  .market-box { margin-top: 20px; padding: 15px; background: var(--panel-soft); border-radius: 15px; text-align: left; }
   .market-box p { margin-top: 7px; line-height: 1.4; }
   .add-button {
     width: 100%; padding: 15px; margin-top: 15px; border: 0; border-radius: 12px;
-    background: #ffcc00; color: #111827; font-size: 16px; font-weight: bold; cursor: pointer;
+    background: var(--blue); color: #07141f; font-size: 16px; font-weight: bold; cursor: pointer;
   }
   .wantlist-button {
-    width: 100%; padding: 15px; margin-top: 10px; border: 1px solid #30363d; border-radius: 12px;
-    background: #0d1117; color: #ff6b8d; font-size: 15px; font-weight: 700; cursor: pointer;
+    width: 100%; padding: 15px; margin-top: 10px; border: 1px solid var(--red-dim); border-radius: 12px;
+    background: var(--panel-soft); color: var(--red); font-size: 15px; font-weight: 700; cursor: pointer;
   }
   .wantlist-button:active { transform: scale(0.98); }
 
   /* WANTLIST */
-  .wantlist-box { background: #161b22; border: 1px solid #30363d; border-radius: 18px; padding: 14px; }
+  .wantlist-box { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 14px; }
   .wantlist-actions { display: flex; gap: 8px; margin-top: 8px; }
   .buy-button {
     flex: 1; padding: 9px 10px; border: none; border-radius: 8px;
-    background: #3fb950; color: #0d1117; font-size: 13px; font-weight: 700; cursor: pointer;
+    background: var(--green); color: #07200d; font-size: 13px; font-weight: 700; cursor: pointer;
   }
   .buy-button:active { transform: scale(0.97); }
 
   /* MODAL (shared by card details, settings, confirm) */
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75);
+    position: fixed; inset: 0; background: rgba(2, 3, 5, 0.8);
     display: flex; align-items: center; justify-content: center;
     padding: 20px; z-index: 9999;
   }
   .modal {
     width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto;
-    background: #161b22; border: 1px solid #30363d; border-radius: 22px;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 22px;
     padding: 22px; text-align: center;
   }
   .modal-image { width: 180px; max-width: 65%; border-radius: 12px; }
   .modal h2 { margin-top: 15px; }
-  .modal-subtitle { color: #9ca3af; margin-top: 6px; line-height: 1.5; }
-  .modal-info { background: #0d1117; border-radius: 15px; padding: 15px; margin-top: 18px; text-align: left; }
+  .modal-subtitle { color: var(--text-muted); margin-top: 6px; line-height: 1.5; }
+  .modal-info { background: var(--panel-soft); border-radius: 15px; padding: 15px; margin-top: 18px; text-align: left; }
   .modal-info-row {
     display: flex; justify-content: space-between; gap: 10px;
-    padding: 7px 0; border-bottom: 1px solid #20262e;
+    padding: 7px 0; border-bottom: 1px solid var(--border);
   }
   .modal-info-row:last-child { border-bottom: none; }
-  .modal-label { color: #8b949e; }
+  .modal-label { color: var(--text-muted); }
   .modal-close {
-    width: 100%; padding: 13px; margin-top: 15px; border: 1px solid #30363d;
-    border-radius: 12px; background: transparent; color: white; font-weight: 600; cursor: pointer;
+    width: 100%; padding: 13px; margin-top: 15px; border: 1px solid var(--border);
+    border-radius: 12px; background: transparent; color: var(--text); font-weight: 600; cursor: pointer;
   }
 
   /* EDIT FORM */
   .form-group { margin-top: 14px; text-align: left; }
-  .form-label { color: #8b949e; font-size: 13px; margin-bottom: 6px; display: block; }
+  .form-label { color: var(--text-muted); font-size: 13px; margin-bottom: 6px; display: block; }
   .form-select, .form-input, .form-textarea {
-    width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #30363d;
-    background: #0d1117; color: white; font-size: 15px; outline: none; font-family: inherit;
+    width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border);
+    background: var(--panel-soft); color: var(--text); font-size: 15px; outline: none; font-family: inherit;
   }
-  .form-select:focus, .form-input:focus, .form-textarea:focus { border-color: #ffcb05; }
+  .form-select:focus, .form-input:focus, .form-textarea:focus { border-color: var(--blue); }
   .form-textarea { resize: vertical; min-height: 70px; }
   .edit-button {
-    width: 100%; padding: 13px; margin-top: 15px; border: 1px solid #30363d;
-    border-radius: 12px; background: #0d1117; color: #ffcb05; font-size: 15px; font-weight: 700; cursor: pointer;
+    width: 100%; padding: 13px; margin-top: 15px; border: 1px solid var(--border);
+    border-radius: 12px; background: var(--panel-soft); color: var(--blue); font-size: 15px; font-weight: 700; cursor: pointer;
   }
   .edit-button:active { transform: scale(0.98); }
   .save-button {
     width: 100%; padding: 14px; margin-top: 15px; border: 0; border-radius: 12px;
-    background: #ffcc00; color: #111827; font-size: 16px; font-weight: bold; cursor: pointer;
+    background: var(--blue); color: #07141f; font-size: 16px; font-weight: bold; cursor: pointer;
   }
-  .profit-positive { color: #3fb950; }
-  .profit-negative { color: #ff6b6b; }
+  .profit-positive { color: var(--green); }
+  .profit-negative { color: var(--red); }
 
   /* SETTINGS MENU */
   .settings-menu-button {
-    width: 100%; padding: 14px; margin-top: 10px; border: 1px solid #30363d;
-    border-radius: 12px; background: #0d1117; color: white; font-size: 15px; font-weight: 600;
+    width: 100%; padding: 14px; margin-top: 10px; border: 1px solid var(--border);
+    border-radius: 12px; background: var(--panel-soft); color: var(--text); font-size: 15px; font-weight: 600;
     cursor: pointer; text-align: left; display: flex; align-items: center; gap: 10px;
   }
   .settings-menu-button:active { transform: scale(0.98); }
-  .settings-info { color: #8b949e; font-size: 13px; margin-top: 14px; line-height: 1.5; text-align: left; }
+  .settings-info { color: var(--text-muted); font-size: 13px; margin-top: 14px; line-height: 1.5; text-align: left; }
 
   /* CONFIRM MODAL */
   .confirm-buttons { display: flex; gap: 10px; margin-top: 18px; }
   .confirm-buttons button {
-    flex: 1; padding: 13px; border-radius: 12px; font-weight: 700; cursor: pointer; border: 1px solid #30363d;
+    flex: 1; padding: 13px; border-radius: 12px; font-weight: 700; cursor: pointer; border: 1px solid var(--border);
   }
-  .confirm-cancel { background: transparent; color: white; }
-  .confirm-delete { background: #ff6b6b; border: none; color: #111827; }
+  .confirm-cancel { background: transparent; color: var(--text); }
+  .confirm-delete { background: var(--red); border: none; color: white; }
 
   /* TOASTS */
   .toast-container {
-    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    position: fixed; bottom: 96px; left: 50%; transform: translateX(-50%);
     display: flex; flex-direction: column; gap: 10px; z-index: 10000;
     width: 100%; max-width: 420px; padding: 0 20px; pointer-events: none;
   }
   .toast {
-    background: #161b22; border: 1px solid #30363d; border-left: 4px solid #58a6ff;
-    border-radius: 12px; padding: 13px 16px; font-size: 14px; color: white;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4); animation: toast-in 0.25s ease; pointer-events: auto;
+    background: var(--panel); border: 1px solid var(--border); border-left: 4px solid var(--blue);
+    border-radius: 12px; padding: 13px 16px; font-size: 14px; color: var(--text);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5); animation: toast-in 0.25s ease; pointer-events: auto;
   }
-  .toast.success { border-left-color: #3fb950; }
-  .toast.error { border-left-color: #ff6b6b; }
-  .toast.info { border-left-color: #58a6ff; }
+  .toast.success { border-left-color: var(--green); }
+  .toast.error { border-left-color: var(--red); }
+  .toast.info { border-left-color: var(--blue); }
   @keyframes toast-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes toast-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(10px); } }
 
-  /* COLLECTION TOOLBAR (busca + ordenação) */
-  .collection-toolbar {
-    display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;
-  }
-  .collection-toolbar .search-input { margin-top: 0; }
+  /* VIEWS (tab content) */
+  .view { display: none; }
+  .view.active { display: block; }
 
-  footer { text-align: center; color: #484f58; font-size: 12px; margin-top: 30px; }
+  /* BOTTOM NAVIGATION */
+  .bottom-nav {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: 0;
+    width: 100%; max-width: 500px;
+    background: rgba(18, 21, 28, 0.92); backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-around; align-items: flex-end;
+    padding: 10px 6px calc(10px + env(safe-area-inset-bottom, 0px));
+    z-index: 500;
+  }
+  .nav-tab {
+    background: none; border: none; color: var(--text-muted);
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    font-size: 11px; font-weight: 600; cursor: pointer;
+    padding: 4px 8px; border-radius: 10px; font-family: inherit;
+  }
+  .nav-tab.active { color: var(--blue); }
+  .nav-tab-icon { font-size: 21px; line-height: 1; }
+  .nav-scan-button {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--red), var(--red-dim));
+    border: 4px solid var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; margin-top: -26px; cursor: pointer;
+    box-shadow: 0 6px 18px rgba(239,68,68,0.45);
+  }
+  .nav-scan-button:active { transform: scale(0.95); }
+
+  footer { text-align: center; color: #454a56; font-size: 12px; margin-top: 24px; }
 </style>
 </head>
 
@@ -266,76 +345,139 @@
     <div class="profile" onclick="openSettingsMenu()" title="Definições">👤</div>
   </header>
 
-  <section class="welcome">
-    <h1>A tua coleção.</h1>
-    <p>Organiza, acompanha e descobre o valor das tuas cartas.</p>
-  </section>
+  <!-- ===================== INÍCIO ===================== -->
+  <div id="view-home" class="view active">
 
-  <section class="scan-card">
-    <div class="scan-icon">📸</div>
-    <h2>Scan a Card</h2>
-    <p>Fotografa uma carta e deixa o PokéPortfolio identificá-la.</p>
-    <button class="scan-button" onclick="scanCard()">📷 Digitalizar carta</button>
-  </section>
+    <section class="welcome">
+      <h1>A tua coleção.</h1>
+      <p>Organiza, acompanha e descobre o valor das tuas cartas.</p>
+    </section>
 
-  <div id="scanner-area"></div>
+    <section class="value-overview">
+      <div class="value-overview-top">
+        <div class="value-overview-label"><span class="live-dot"></span> Valor da coleção</div>
+      </div>
+      <div class="value-overview-amount" id="overview-value">€0,00</div>
+      <div class="value-overview-delta" id="overview-delta">A começar a registar a evolução da tua coleção.</div>
+      <div class="value-chart-wrap" id="value-chart-wrap"></div>
+    </section>
 
-  <h2 class="section-title">O teu portfólio</h2>
+    <section class="scan-card">
+      <div class="scan-icon">📸</div>
+      <h2>Scan a Card</h2>
+      <p>Fotografa uma carta e deixa o PokéPortfolio identificá-la.</p>
+      <button class="scan-button" onclick="goToScan()">📷 Digitalizar carta</button>
+    </section>
 
-  <section class="stats">
-    <div class="stat">
-      <div class="stat-label">Cartas</div>
-      <div class="stat-value" id="cards-count">0</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Valor estimado</div>
-      <div class="stat-value" id="portfolio-value">€0,00</div>
-    </div>
-  </section>
+    <h2 class="section-title">O teu portfólio</h2>
 
-  <button class="refresh-prices-link" onclick="refreshPrices()">🔄 Atualizar preços da coleção</button>
+    <section class="stats">
+      <div class="stat">
+        <div class="stat-label">Cartas</div>
+        <div class="stat-value" id="cards-count">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Valor estimado</div>
+        <div class="stat-value" id="portfolio-value">€0,00</div>
+      </div>
+    </section>
 
-  <h2 class="section-title">A minha coleção</h2>
+    <button class="refresh-prices-link" onclick="refreshPrices()">🔄 Atualizar preços da coleção</button>
 
-  <div class="collection-toolbar" id="collection-toolbar" style="display:none;">
-    <input
-      type="text"
-      class="search-input"
-      id="collection-search"
-      placeholder="🔎 Procurar na minha coleção"
-      autocomplete="off"
-      oninput="handleCollectionSearch()"
-    >
-    <select class="form-select" id="collection-sort" onchange="handleCollectionSort()">
-      <option value="default">Ordem original</option>
-      <option value="name-asc">Nome A-Z</option>
-      <option value="name-desc">Nome Z-A</option>
-      <option value="price-desc">Preço: maior → menor</option>
-      <option value="price-asc">Preço: menor → maior</option>
-      <option value="recent">Mais recentes primeiro</option>
-      <option value="oldest">Mais antigas primeiro</option>
-    </select>
   </div>
 
-  <section class="collection">
-    <div class="empty">
-      <div class="empty-icon">🃏</div>
-      <p>Ainda não tens cartas na tua coleção.<br>Digitaliza a tua primeira carta para começar.</p>
-    </div>
-  </section>
+  <!-- ===================== COLEÇÃO ===================== -->
+  <div id="view-collection" class="view">
 
-  <h2 class="section-title">❤️ Wantlist</h2>
+    <h2 class="section-title">A minha coleção</h2>
 
-  <section class="wantlist-box" id="wantlist-section">
-    <div class="empty">
-      <div class="empty-icon">❤️</div>
-      <p>Ainda não tens cartas na tua wantlist.<br>Adiciona cartas que queres comprar a partir da pesquisa.</p>
+    <div class="collection-toolbar" id="collection-toolbar" style="display:none;">
+      <input
+        type="text"
+        class="search-input"
+        id="collection-search"
+        placeholder="🔎 Procurar na minha coleção"
+        autocomplete="off"
+        oninput="handleCollectionSearch()"
+      >
+      <select class="form-select" id="collection-sort" onchange="handleCollectionSort()">
+        <option value="default">Ordem original</option>
+        <option value="name-asc">Nome A-Z</option>
+        <option value="name-desc">Nome Z-A</option>
+        <option value="price-desc">Preço: maior → menor</option>
+        <option value="price-asc">Preço: menor → maior</option>
+        <option value="recent">Mais recentes primeiro</option>
+        <option value="oldest">Mais antigas primeiro</option>
+      </select>
     </div>
-  </section>
+
+    <section class="collection">
+      <div class="empty">
+        <div class="empty-icon">🃏</div>
+        <p>Ainda não tens cartas na tua coleção.<br>Digitaliza a tua primeira carta para começar.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ===================== SCAN ===================== -->
+  <div id="view-scan" class="view">
+
+    <h2 class="section-title">📷 Scan</h2>
+
+    <div id="scan-placeholder" class="empty" style="background:var(--panel); border:1px solid var(--border); border-radius:20px;">
+      <div class="empty-icon">📷</div>
+      <p>Toca no botão vermelho em baixo, ou aqui, para tirar uma fotografia de uma carta.</p>
+    </div>
+
+    <div id="scanner-area"></div>
+
+  </div>
+
+  <!-- ===================== WANTLIST ===================== -->
+  <div id="view-wantlist" class="view">
+
+    <h2 class="section-title">❤️ Wantlist</h2>
+
+    <section class="wantlist-box" id="wantlist-section">
+      <div class="empty">
+        <div class="empty-icon">❤️</div>
+        <p>Ainda não tens cartas na tua wantlist.<br>Adiciona cartas que queres comprar a partir da pesquisa.</p>
+      </div>
+    </section>
+
+  </div>
 
   <footer>PokéPortfolio · Projeto em desenvolvimento</footer>
 
 </div>
+
+<!-- ===================== NAVEGAÇÃO INFERIOR ===================== -->
+<nav class="bottom-nav">
+  <button class="nav-tab active" id="tab-home" onclick="switchTab('home')">
+    <span class="nav-tab-icon">🏠</span>
+    <span>Início</span>
+  </button>
+
+  <button class="nav-tab" id="tab-collection" onclick="switchTab('collection')">
+    <span class="nav-tab-icon">🃏</span>
+    <span>Coleção</span>
+  </button>
+
+  <button class="nav-scan-button" onclick="goToScan()" title="Digitalizar carta">
+    <span>📷</span>
+  </button>
+
+  <button class="nav-tab" id="tab-wantlist" onclick="switchTab('wantlist')">
+    <span class="nav-tab-icon">❤️</span>
+    <span>Wantlist</span>
+  </button>
+
+  <button class="nav-tab" id="tab-profile" onclick="openSettingsMenu()">
+    <span class="nav-tab-icon">⚙️</span>
+    <span>Perfil</span>
+  </button>
+</nav>
 
 <script>
 
@@ -382,6 +524,31 @@ function saveWantlist(wantlist) {
 function formatPrice(value) {
   const number = Number(value) || 0;
   return number.toFixed(2).replace(".", ",") + " €";
+}
+
+/* =====================================================
+   NAVEGAÇÃO POR SEPARADORES (novo)
+===================================================== */
+
+function switchTab(tabName) {
+  const views = ["home", "collection", "scan", "wantlist"];
+  views.forEach(name => {
+    const view = document.getElementById("view-" + name);
+    if (view) view.classList.toggle("active", name === tabName);
+  });
+
+  const tabs = ["home", "collection", "wantlist"];
+  tabs.forEach(name => {
+    const btn = document.getElementById("tab-" + name);
+    if (btn) btn.classList.toggle("active", name === tabName);
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function goToScan() {
+  switchTab("scan");
+  scanCard();
 }
 
 /* =====================================================
@@ -455,8 +622,18 @@ function scanCard() {
   input.accept = "image/*";
   input.setAttribute("capture", "environment");
 
+  /* Melhor esforço: se o utilizador cancelar a escolha de foto,
+     mostrar novamente o placeholder (nem todos os browsers disparam este evento) */
+  input.oncancel = function () {
+    const placeholder = document.getElementById("scan-placeholder");
+    if (placeholder) placeholder.style.display = "block";
+  };
+
   input.onchange = function () {
     if (!input.files || !input.files[0]) return;
+
+    const placeholder = document.getElementById("scan-placeholder");
+    if (placeholder) placeholder.style.display = "none";
 
     const file = input.files[0];
     const imageURL = URL.createObjectURL(file);
@@ -494,6 +671,9 @@ function closeScanner() {
   const scannerArea = document.getElementById("scanner-area");
   scannerArea.innerHTML = "";
   window.selectedCard = null;
+
+  const placeholder = document.getElementById("scan-placeholder");
+  if (placeholder) placeholder.style.display = "block";
 }
 
 /* =====================================================
@@ -508,7 +688,7 @@ async function searchCard() {
   const name = input.value.trim();
 
   if (!name) {
-    results.innerHTML = `<p style="color:#ff6b6b;margin-top:15px;">Escreve primeiro o nome da carta.</p>`;
+    results.innerHTML = `<p style="color:#ef4444;margin-top:15px;">Escreve primeiro o nome da carta.</p>`;
     return;
   }
 
@@ -522,7 +702,7 @@ async function searchCard() {
     const cards = await response.json();
 
     if (!cards || cards.length === 0) {
-      results.innerHTML = `<p style="color:#ff6b6b;margin-top:15px;">❌ Não encontrei nenhuma carta com esse nome.</p>`;
+      results.innerHTML = `<p style="color:#ef4444;margin-top:15px;">❌ Não encontrei nenhuma carta com esse nome.</p>`;
       return;
     }
 
@@ -549,7 +729,7 @@ async function searchCard() {
 
   } catch (error) {
     console.error(error);
-    results.innerHTML = `<p style="color:#ff6b6b;margin-top:15px;">⚠️ Não foi possível contactar a base de dados. Tenta novamente.</p>`;
+    results.innerHTML = `<p style="color:#ef4444;margin-top:15px;">⚠️ Não foi possível contactar a base de dados. Tenta novamente.</p>`;
   }
 }
 
@@ -599,7 +779,7 @@ async function loadCard(cardId) {
 
   } catch (error) {
     console.error(error);
-    results.innerHTML = `<p style="color:#ff6b6b;margin-top:15px;">⚠️ Não foi possível carregar os dados desta carta.</p>`;
+    results.innerHTML = `<p style="color:#ef4444;margin-top:15px;">⚠️ Não foi possível carregar os dados desta carta.</p>`;
   }
 }
 
@@ -650,7 +830,7 @@ function addToPortfolio() {
 }
 
 /* =====================================================
-   WANTLIST (novo)
+   WANTLIST
 ===================================================== */
 
 function addToWantlist() {
@@ -878,7 +1058,7 @@ function openPortfolioCard(cardId) {
         </div>
         <div class="modal-info-row">
           <span class="modal-label">Valor total</span>
-          <strong style="color:#ffcb05;">${totalValue > 0 ? formatPrice(totalValue) : "Sem preço"}</strong>
+          <strong style="color:var(--blue);">${totalValue > 0 ? formatPrice(totalValue) : "Sem preço"}</strong>
         </div>
         ${conditionRow}
         ${investmentRows}
@@ -904,7 +1084,7 @@ function closeCardModal() {
 }
 
 /* =====================================================
-   EDITAR CARTA — condição, valor pago, notas (novo)
+   EDITAR CARTA — condição, valor pago, notas
 ===================================================== */
 
 const CARD_CONDITIONS = [
@@ -1000,7 +1180,7 @@ function saveCardEdit(cardId) {
 }
 
 /* =====================================================
-   MENU DE DEFINIÇÕES (novo)
+   MENU DE DEFINIÇÕES
 ===================================================== */
 
 function openSettingsMenu() {
@@ -1050,7 +1230,7 @@ function closeSettingsModal() {
 }
 
 /* =====================================================
-   ATUALIZAR PREÇOS (novo)
+   ATUALIZAR PREÇOS
 ===================================================== */
 
 async function refreshPrices() {
@@ -1095,7 +1275,7 @@ async function refreshPrices() {
 }
 
 /* =====================================================
-   EXPORTAR COLEÇÃO (novo)
+   EXPORTAR COLEÇÃO
 ===================================================== */
 
 function exportCollection() {
@@ -1130,7 +1310,7 @@ function exportCollection() {
 }
 
 /* =====================================================
-   IMPORTAR COLEÇÃO (novo)
+   IMPORTAR COLEÇÃO
 ===================================================== */
 
 function triggerImport() {
@@ -1233,6 +1413,109 @@ function triggerImport() {
 }
 
 /* =====================================================
+   HISTÓRICO E GRÁFICO DE VALOR (novo)
+===================================================== */
+
+function recordSnapshotIfNeeded(value) {
+  const today = new Date().toISOString().slice(0, 10);
+  let history = [];
+
+  try {
+    const saved = JSON.parse(localStorage.getItem("pokePortfolioHistory"));
+    if (Array.isArray(saved)) history = saved;
+  } catch (error) {
+    history = [];
+  }
+
+  const todayEntry = history.find(entry => entry.date === today);
+
+  if (todayEntry) {
+    todayEntry.value = value;
+  } else {
+    history.push({ date: today, value: value });
+  }
+
+  /* Manter um histórico razoável (últimos ~400 dias) */
+  history = history.slice(-400);
+
+  localStorage.setItem("pokePortfolioHistory", JSON.stringify(history));
+  return history;
+}
+
+function renderOverview(total) {
+  const overviewValue = document.getElementById("overview-value");
+  const overviewDelta = document.getElementById("overview-delta");
+
+  if (overviewValue) overviewValue.textContent = formatPrice(total);
+
+  const history = recordSnapshotIfNeeded(total);
+  const sorted = [...history].sort((a, b) => a.date.localeCompare(b.date));
+
+  if (sorted.length < 2) {
+    if (overviewDelta) {
+      overviewDelta.textContent = "A começar a registar a evolução da tua coleção.";
+      overviewDelta.className = "value-overview-delta";
+    }
+  } else {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const sevenDaysAgoStr = sevenDaysAgo.toISOString().slice(0, 10);
+
+    const referenceEntry = sorted.find(entry => entry.date >= sevenDaysAgoStr) || sorted[0];
+    const diff = total - referenceEntry.value;
+    const sign = diff >= 0 ? "+" : "";
+    const diffClass = diff >= 0 ? "profit-positive" : "profit-negative";
+
+    if (overviewDelta) {
+      overviewDelta.textContent = `${sign}${formatPrice(diff)} nos últimos 7 dias`;
+      overviewDelta.className = "value-overview-delta " + diffClass;
+    }
+  }
+
+  renderValueChart(sorted);
+}
+
+function renderValueChart(sortedHistory) {
+  const wrap = document.getElementById("value-chart-wrap");
+  if (!wrap) return;
+
+  if (sortedHistory.length < 2) {
+    wrap.innerHTML = `<div class="chart-empty">📈 O gráfico vai aparecer aqui à medida que fores usando a app ao longo dos dias.</div>`;
+    return;
+  }
+
+  const values = sortedHistory.map(entry => entry.value);
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = (max - min) || 1;
+
+  const width = 300;
+  const height = 84;
+  const stepX = sortedHistory.length > 1 ? width / (sortedHistory.length - 1) : 0;
+
+  const points = sortedHistory.map((entry, index) => {
+    const x = index * stepX;
+    const y = height - ((entry.value - min) / range) * height;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+
+  const areaPoints = `0,${height} ${points} ${width},${height}`;
+
+  wrap.innerHTML = `
+    <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" class="value-chart-svg">
+      <defs>
+        <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#4f8fe8" stop-opacity="0.55"></stop>
+          <stop offset="100%" stop-color="#4f8fe8" stop-opacity="0"></stop>
+        </linearGradient>
+      </defs>
+      <polygon points="${areaPoints}" fill="url(#chartGradient)"></polygon>
+      <polyline points="${points}" fill="none" stroke="#4f8fe8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+    </svg>
+  `;
+}
+
+/* =====================================================
    MOSTRAR PORTFÓLIO
 ===================================================== */
 
@@ -1256,6 +1539,9 @@ function renderPortfolio() {
   }, 0);
 
   totalValue.textContent = formatPrice(total);
+
+  /* Atualizar o painel de visão geral + histórico/gráfico */
+  renderOverview(total);
 
   /* Coleção completamente vazia: esconder barra de pesquisa/ordenação */
   if (portfolio.length === 0) {
@@ -1326,7 +1612,7 @@ function renderPortfolio() {
 }
 
 /* =====================================================
-   PESQUISA E ORDENAÇÃO DA COLEÇÃO (novo)
+   PESQUISA E ORDENAÇÃO DA COLEÇÃO
 ===================================================== */
 
 function sortCards(cards, order) {
