@@ -1,24 +1,44 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>PokéPortfolio</title>
 
+
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
       background: #0d1117;
       color: white;
+
       min-height: 100vh;
     }
+
+
+    button {
+      font-family: inherit;
+    }
+
 
     .app {
       max-width: 500px;
@@ -26,161 +46,865 @@
       padding: 24px 18px 40px;
     }
 
+
+    /* ==============================
+       HEADER
+    ============================== */
+
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+
       margin-bottom: 30px;
     }
+
 
     .logo {
       font-size: 24px;
       font-weight: 800;
     }
 
+
     .logo span {
       color: #ffcb05;
     }
 
+
     .profile {
       width: 42px;
       height: 42px;
+
       border-radius: 50%;
+
       background: #1f2937;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       font-size: 20px;
     }
+
+
+    /* ==============================
+       WELCOME
+    ============================== */
 
     .welcome {
       margin-bottom: 24px;
     }
+
 
     .welcome h1 {
       font-size: 30px;
       margin-bottom: 8px;
     }
 
+
     .welcome p {
       color: #8b949e;
       font-size: 15px;
+      line-height: 1.5;
     }
 
+
+    /* ==============================
+       SCANNER
+    ============================== */
+
     .scan-card {
-      background: linear-gradient(135deg, #ffcb05, #f59e0b);
+      background:
+        linear-gradient(
+          135deg,
+          #ffcb05,
+          #f59e0b
+        );
+
       color: #111827;
+
       border-radius: 22px;
+
       padding: 25px;
+
       margin-bottom: 24px;
-      box-shadow: 0 10px 30px rgba(255, 203, 5, 0.12);
+
+      box-shadow:
+        0 10px 30px
+        rgba(255, 203, 5, 0.12);
     }
+
 
     .scan-icon {
       font-size: 42px;
       margin-bottom: 12px;
     }
 
+
     .scan-card h2 {
       font-size: 22px;
       margin-bottom: 7px;
     }
 
+
     .scan-card p {
       font-size: 14px;
       margin-bottom: 18px;
       opacity: 0.8;
+      line-height: 1.5;
     }
+
 
     .scan-button {
       border: none;
+
       background: #111827;
       color: white;
+
       width: 100%;
+
       padding: 14px;
+
       border-radius: 13px;
+
       font-size: 16px;
       font-weight: 700;
+
       cursor: pointer;
     }
+
+
+    .scan-button:active {
+      transform: scale(0.98);
+    }
+
+
+    /* ==============================
+       SCANNER AREA
+    ============================== */
+
+    #scanner-area {
+      width: 100%;
+    }
+
+
+    .scanner-preview {
+      background: #161b22;
+
+      border: 1px solid #30363d;
+
+      border-radius: 20px;
+
+      padding: 20px;
+
+      margin-bottom: 28px;
+
+      text-align: center;
+    }
+
+
+    .scanner-preview h3 {
+      font-size: 20px;
+    }
+
+
+    .scanner-image {
+      display: block;
+
+      width: 100%;
+      max-height: 500px;
+
+      object-fit: contain;
+
+      border-radius: 12px;
+
+      margin: 15px auto 0;
+    }
+
+
+    .scanner-identify {
+      margin-top: 20px;
+
+      padding-top: 20px;
+
+      border-top: 1px solid #30363d;
+    }
+
+
+    .scanner-identify p {
+      color: #9ca3af;
+
+      margin-top: 8px;
+      margin-bottom: 10px;
+
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+
+    .search-input {
+      width: 100%;
+
+      padding: 14px;
+
+      border-radius: 12px;
+
+      border: 1px solid #30363d;
+
+      background: #0d1117;
+      color: white;
+
+      font-size: 16px;
+
+      margin-top: 10px;
+
+      outline: none;
+    }
+
+
+    .search-input:focus {
+      border-color: #ffcb05;
+    }
+
+
+    .search-button {
+      width: 100%;
+
+      padding: 14px;
+
+      margin-top: 10px;
+
+      border: 0;
+
+      border-radius: 12px;
+
+      background: #ffcc00;
+      color: #111827;
+
+      font-size: 16px;
+      font-weight: bold;
+
+      cursor: pointer;
+    }
+
+
+    .close-scanner {
+      width: 100%;
+
+      padding: 11px;
+
+      margin-top: 10px;
+
+      border: 1px solid #30363d;
+
+      border-radius: 12px;
+
+      background: transparent;
+      color: #9ca3af;
+
+      font-size: 14px;
+
+      cursor: pointer;
+    }
+
+
+    /* ==============================
+       SECTIONS
+    ============================== */
 
     .section-title {
       font-size: 19px;
       margin-bottom: 12px;
     }
 
+
+    /* ==============================
+       STATS
+    ============================== */
+
     .stats {
       display: grid;
+
       grid-template-columns: 1fr 1fr;
+
       gap: 12px;
+
       margin-bottom: 28px;
     }
 
+
     .stat {
       background: #161b22;
+
       border: 1px solid #30363d;
+
       border-radius: 16px;
+
       padding: 18px;
     }
 
+
     .stat-label {
       color: #8b949e;
+
       font-size: 13px;
+
       margin-bottom: 7px;
     }
+
 
     .stat-value {
       font-size: 23px;
       font-weight: 800;
     }
 
+
+    /* ==============================
+       COLLECTION
+    ============================== */
+
     .collection {
       background: #161b22;
+
       border: 1px solid #30363d;
+
       border-radius: 18px;
-      padding: 20px;
+
+      padding: 14px;
     }
+
 
     .empty {
       text-align: center;
+
       padding: 25px 10px;
+
       color: #8b949e;
     }
 
+
     .empty-icon {
       font-size: 40px;
+
       margin-bottom: 10px;
     }
 
+
     .empty p {
       font-size: 14px;
+
       line-height: 1.5;
     }
 
+
+    /* ==============================
+       CARD DA COLEÇÃO
+    ============================== */
+
+    .portfolio-card {
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+
+      padding: 12px;
+
+      margin-bottom: 10px;
+
+      background: #0d1117;
+
+      border: 1px solid #30363d;
+
+      border-radius: 15px;
+
+      cursor: pointer;
+
+      transition:
+        transform 0.15s ease,
+        border-color 0.15s ease;
+    }
+
+
+    .portfolio-card:last-child {
+      margin-bottom: 0;
+    }
+
+
+    .portfolio-card:active {
+      transform: scale(0.98);
+    }
+
+
+    .portfolio-card:hover {
+      border-color: #555f6d;
+    }
+
+
+    .portfolio-card-image {
+      width: 68px;
+
+      flex-shrink: 0;
+
+      border-radius: 8px;
+
+      display: block;
+    }
+
+
+    .portfolio-card-info {
+      flex: 1;
+
+      min-width: 0;
+    }
+
+
+    .portfolio-card-name {
+      font-size: 16px;
+
+      font-weight: 700;
+
+      display: block;
+
+      white-space: nowrap;
+
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+    }
+
+
+    .portfolio-card-set {
+      color: #9ca3af;
+
+      font-size: 13px;
+
+      margin-top: 4px;
+    }
+
+
+    .portfolio-card-price {
+      color: #ffcb05;
+
+      font-weight: bold;
+
+      margin-top: 5px;
+    }
+
+
+    /* ==============================
+       QUANTIDADE
+    ============================== */
+
+    .quantity-box {
+      display: flex;
+
+      align-items: center;
+
+      gap: 5px;
+
+      margin-top: 8px;
+    }
+
+
+    .quantity-button {
+      width: 28px;
+      height: 28px;
+
+      border: 1px solid #30363d;
+
+      border-radius: 8px;
+
+      background: #161b22;
+
+      color: white;
+
+      font-size: 17px;
+
+      cursor: pointer;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+    }
+
+
+    .quantity-number {
+      min-width: 24px;
+
+      text-align: center;
+
+      font-size: 14px;
+
+      font-weight: 700;
+    }
+
+
+    /* ==============================
+       REMOVER
+    ============================== */
+
+    .delete-button {
+      width: 32px;
+      height: 32px;
+
+      flex-shrink: 0;
+
+      border: 1px solid #30363d;
+
+      border-radius: 9px;
+
+      background: #161b22;
+
+      color: #ff6b6b;
+
+      font-size: 16px;
+
+      cursor: pointer;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+    }
+
+
+    /* ==============================
+       RESULTADOS
+    ============================== */
+
+    .search-results-title {
+      margin-top: 20px;
+    }
+
+
+    .search-result {
+      margin-top: 15px;
+
+      padding: 12px;
+
+      background: #0d1117;
+
+      border: 1px solid #30363d;
+
+      border-radius: 16px;
+
+      cursor: pointer;
+
+      transition:
+        transform 0.15s ease,
+        border-color 0.15s ease;
+    }
+
+
+    .search-result:active {
+      transform: scale(0.98);
+    }
+
+
+    .search-result:hover {
+      border-color: #555f6d;
+    }
+
+
+    .search-result-content {
+      display: flex;
+
+      align-items: center;
+
+      gap: 12px;
+    }
+
+
+    .search-result-image {
+      width: 70px;
+
+      border-radius: 8px;
+
+      flex-shrink: 0;
+    }
+
+
+    .search-result-info {
+      text-align: left;
+
+      min-width: 0;
+    }
+
+
+    .search-result-name {
+      font-size: 16px;
+
+      font-weight: 700;
+    }
+
+
+    .search-result-id {
+      color: #9ca3af;
+
+      margin-top: 5px;
+
+      font-size: 13px;
+    }
+
+
+    /* ==============================
+       CARTA DETALHES
+    ============================== */
+
+    .card-details {
+      margin-top: 20px;
+
+      padding: 20px;
+
+      background: #161b22;
+
+      border-radius: 20px;
+
+      text-align: center;
+    }
+
+
+    .card-details-image {
+      width: 180px;
+
+      max-width: 70%;
+
+      border-radius: 12px;
+    }
+
+
+    .card-details-subtitle {
+      color: #9ca3af;
+
+      margin-top: 6px;
+
+      line-height: 1.4;
+    }
+
+
+    .market-box {
+      margin-top: 20px;
+
+      padding: 15px;
+
+      background: #0d1117;
+
+      border-radius: 15px;
+
+      text-align: left;
+    }
+
+
+    .market-box p {
+      margin-top: 7px;
+
+      line-height: 1.4;
+    }
+
+
+    .add-button {
+      width: 100%;
+
+      padding: 15px;
+
+      margin-top: 15px;
+
+      border: 0;
+
+      border-radius: 12px;
+
+      background: #ffcc00;
+
+      color: #111827;
+
+      font-size: 16px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+    }
+
+
+    /* ==============================
+       MODAL
+    ============================== */
+
+    .modal-overlay {
+      position: fixed;
+
+      inset: 0;
+
+      background:
+        rgba(0, 0, 0, 0.75);
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      padding: 20px;
+
+      z-index: 9999;
+    }
+
+
+    .modal {
+      width: 100%;
+
+      max-width: 420px;
+
+      max-height: 90vh;
+
+      overflow-y: auto;
+
+      background: #161b22;
+
+      border: 1px solid #30363d;
+
+      border-radius: 22px;
+
+      padding: 22px;
+
+      text-align: center;
+    }
+
+
+    .modal-image {
+      width: 180px;
+
+      max-width: 65%;
+
+      border-radius: 12px;
+    }
+
+
+    .modal h2 {
+      margin-top: 15px;
+    }
+
+
+    .modal-subtitle {
+      color: #9ca3af;
+
+      margin-top: 6px;
+
+      line-height: 1.5;
+    }
+
+
+    .modal-info {
+      background: #0d1117;
+
+      border-radius: 15px;
+
+      padding: 15px;
+
+      margin-top: 18px;
+
+      text-align: left;
+    }
+
+
+    .modal-info-row {
+      display: flex;
+
+      justify-content: space-between;
+
+      gap: 10px;
+
+      padding: 7px 0;
+
+      border-bottom: 1px solid #20262e;
+    }
+
+
+    .modal-info-row:last-child {
+      border-bottom: none;
+    }
+
+
+    .modal-label {
+      color: #8b949e;
+    }
+
+
+    .modal-close {
+      width: 100%;
+
+      padding: 13px;
+
+      margin-top: 15px;
+
+      border: 1px solid #30363d;
+
+      border-radius: 12px;
+
+      background: transparent;
+
+      color: white;
+
+      font-weight: 600;
+
+      cursor: pointer;
+    }
+
+
+    /* ==============================
+       FOOTER
+    ============================== */
+
     footer {
       text-align: center;
+
       color: #484f58;
+
       font-size: 12px;
+
       margin-top: 30px;
     }
+
+
   </style>
+
 </head>
+
 
 <body>
 
+
   <div class="app">
 
+
+    <!-- HEADER -->
+
     <header>
-      <div class="logo">Poké<span>Portfolio</span></div>
-      <div class="profile">👤</div>
+
+      <div class="logo">
+        Poké<span>Portfolio</span>
+      </div>
+
+      <div class="profile">
+        👤
+      </div>
+
     </header>
 
+
+    <!-- WELCOME -->
+
     <section class="welcome">
-      <h1>A tua coleção.</h1>
+
+      <h1>
+        A tua coleção.
+      </h1>
 
       <p>
-        Organiza, acompanha e descobre o valor das tuas cartas.
+        Organiza, acompanha e descobre
+        o valor das tuas cartas.
       </p>
+
     </section>
 
 
@@ -188,12 +912,17 @@
 
     <section class="scan-card">
 
-      <div class="scan-icon">📸</div>
+      <div class="scan-icon">
+        📸
+      </div>
 
-      <h2>Scan a Card</h2>
+      <h2>
+        Scan a Card
+      </h2>
 
       <p>
-        Fotografa uma carta e deixa o PokéPortfolio identificá-la.
+        Fotografa uma carta e deixa
+        o PokéPortfolio identificá-la.
       </p>
 
       <button
@@ -206,13 +935,20 @@
     </section>
 
 
+    <!-- ÁREA DO SCANNER -->
+
+    <div id="scanner-area"></div>
+
+
     <!-- ESTATÍSTICAS -->
 
     <h2 class="section-title">
       O teu portfólio
     </h2>
 
+
     <section class="stats">
+
 
       <div class="stat">
 
@@ -245,6 +981,7 @@
 
       </div>
 
+
     </section>
 
 
@@ -254,7 +991,9 @@
       A minha coleção
     </h2>
 
+
     <section class="collection">
+
 
       <div class="empty">
 
@@ -263,11 +1002,15 @@
         </div>
 
         <p>
-          Ainda não tens cartas na tua coleção.<br>
-          Digitaliza a tua primeira carta para começar.
+          Ainda não tens cartas
+          na tua coleção.<br>
+
+          Digitaliza a tua primeira
+          carta para começar.
         </p>
 
       </div>
+
 
     </section>
 
@@ -276,22 +1019,106 @@
       PokéPortfolio · Projeto em desenvolvimento
     </footer>
 
+
   </div>
 
 
   <script>
 
 
-    /*
-    ==========================================
-    SCANNER
-    ==========================================
-    */
+    /* =====================================================
+       UTILITÁRIOS
+    ===================================================== */
+
+
+    function getPortfolio() {
+
+      try {
+
+        const saved =
+          JSON.parse(
+            localStorage.getItem(
+              "pokePortfolio"
+            )
+          );
+
+        if (!Array.isArray(saved)) {
+          return [];
+        }
+
+
+        /*
+        Compatibilidade com versões anteriores.
+
+        Se uma carta antiga não tiver
+        quantity, assumimos 1.
+        */
+
+        return saved.map(card => ({
+
+          ...card,
+
+          quantity:
+            Number(card.quantity) > 0
+              ? Number(card.quantity)
+              : 1
+
+        }));
+
+
+      } catch (error) {
+
+        console.error(
+          "Erro ao ler portfólio:",
+          error
+        );
+
+        return [];
+
+      }
+
+    }
+
+
+
+    function savePortfolio(portfolio) {
+
+      localStorage.setItem(
+        "pokePortfolio",
+        JSON.stringify(portfolio)
+      );
+
+    }
+
+
+
+    function formatPrice(value) {
+
+      const number =
+        Number(value) || 0;
+
+
+      return (
+        number
+          .toFixed(2)
+          .replace(".", ",") +
+        " €"
+      );
+
+    }
+
+
+
+    /* =====================================================
+       SCANNER
+    ===================================================== */
+
 
     function scanCard() {
 
       const input =
         document.createElement("input");
+
 
       input.type = "file";
 
@@ -316,19 +1143,22 @@
         const file =
           input.files[0];
 
+
         const imageURL =
           URL.createObjectURL(file);
 
 
-        let oldPreview =
+        const scannerArea =
           document.getElementById(
-            "scanner-preview"
+            "scanner-area"
           );
 
 
-        if (oldPreview) {
-          oldPreview.remove();
-        }
+        /*
+        Limpar scanner anterior.
+        */
+
+        scannerArea.innerHTML = "";
 
 
         const preview =
@@ -339,20 +1169,8 @@
           "scanner-preview";
 
 
-        preview.style.marginTop =
-          "20px";
-
-        preview.style.padding =
-          "20px";
-
-        preview.style.background =
-          "#161b22";
-
-        preview.style.borderRadius =
-          "20px";
-
-        preview.style.textAlign =
-          "center";
+        preview.className =
+          "scanner-preview";
 
 
         preview.innerHTML = `
@@ -364,85 +1182,75 @@
 
           <img
             src="${imageURL}"
-            style="
-              max-width:100%;
-              border-radius:12px;
-              margin-top:10px;
-            "
+            class="scanner-image"
+            alt="Carta fotografada"
           >
 
 
-          <div
-            style="
-              margin-top:20px;
-              padding-top:20px;
-              border-top:1px solid #30363d;
-            "
-          >
+          <div class="scanner-identify">
 
             <h3>
               🔎 Identificar carta
             </h3>
 
 
-            <p
-              style="
-                color:#9ca3af;
-                margin-top:8px;
-                margin-bottom:10px;
-              "
-            >
+            <p>
               Por enquanto, escreve o nome da carta.
-              Em breve vamos automatizar esta parte com IA.
+              Em breve vamos automatizar esta parte
+              com IA.
             </p>
 
 
             <input
               id="card-search"
+              class="search-input"
               type="text"
               placeholder="Ex: Mew ex"
-              style="
-                width:100%;
-                padding:14px;
-                border-radius:12px;
-                border:1px solid #30363d;
-                background:#0d1117;
-                color:white;
-                font-size:16px;
-                box-sizing:border-box;
-                margin-top:10px;
-              "
+              autocomplete="off"
             >
 
 
             <button
+              class="search-button"
               onclick="searchCard()"
-              style="
-                width:100%;
-                padding:14px;
-                margin-top:10px;
-                border:0;
-                border-radius:12px;
-                background:#ffcc00;
-                color:#111827;
-                font-size:16px;
-                font-weight:bold;
-                cursor:pointer;
-              "
             >
               🔍 Procurar carta
+            </button>
+
+
+            <button
+              class="close-scanner"
+              onclick="closeScanner()"
+            >
+              Fechar fotografia
             </button>
 
 
             <div id="search-results"></div>
 
           </div>
+
         `;
 
 
-        document.body.appendChild(
+        scannerArea.appendChild(
           preview
         );
+
+
+        /*
+        Fazer scroll para o scanner.
+        */
+
+        setTimeout(() => {
+
+          preview.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+
+        }, 100);
+
 
       };
 
@@ -453,11 +1261,26 @@
 
 
 
-    /*
-    ==========================================
-    PESQUISAR CARTA
-    ==========================================
-    */
+    function closeScanner() {
+
+      const scannerArea =
+        document.getElementById(
+          "scanner-area"
+        );
+
+
+      scannerArea.innerHTML = "";
+
+      window.selectedCard = null;
+
+    }
+
+
+
+    /* =====================================================
+       PESQUISAR CARTA
+    ===================================================== */
+
 
     async function searchCard() {
 
@@ -471,6 +1294,11 @@
         document.getElementById(
           "search-results"
         );
+
+
+      if (!input || !results) {
+        return;
+      }
 
 
       const name =
@@ -518,9 +1346,11 @@
 
 
         if (!response.ok) {
+
           throw new Error(
             "Erro na API"
           );
+
         }
 
 
@@ -541,7 +1371,8 @@
                 margin-top:15px;
               "
             >
-              ❌ Não encontrei nenhuma carta com esse nome.
+              ❌ Não encontrei nenhuma carta
+              com esse nome.
             </p>
 
           `;
@@ -554,9 +1385,7 @@
         results.innerHTML = `
 
           <h3
-            style="
-              margin-top:20px;
-            "
+            class="search-results-title"
           >
             🃏 Resultados encontrados
           </h3>
@@ -573,23 +1402,8 @@
               document.createElement("div");
 
 
-            cardElement.style.marginTop =
-              "15px";
-
-            cardElement.style.padding =
-              "12px";
-
-            cardElement.style.background =
-              "#0d1117";
-
-            cardElement.style.border =
-              "1px solid #30363d";
-
-            cardElement.style.borderRadius =
-              "16px";
-
-            cardElement.style.cursor =
-              "pointer";
+            cardElement.className =
+              "search-result";
 
 
             const image =
@@ -600,54 +1414,39 @@
 
             cardElement.innerHTML = `
 
-              <div
-                style="
-                  display:flex;
-                  align-items:center;
-                  gap:12px;
-                "
-              >
+              <div class="search-result-content">
+
 
                 ${
                   image
                     ? `
                       <img
                         src="${image}"
-                        style="
-                          width:70px;
-                          border-radius:8px;
-                        "
+                        class="search-result-image"
+                        alt="${card.name}"
                       >
                     `
                     : ""
                 }
 
 
-                <div
-                  style="
-                    text-align:left;
-                  "
-                >
+                <div class="search-result-info">
 
                   <strong
-                    style="
-                      font-size:16px;
-                    "
+                    class="search-result-name"
                   >
                     ${card.name}
                   </strong>
 
 
                   <div
-                    style="
-                      color:#9ca3af;
-                      margin-top:5px;
-                    "
+                    class="search-result-id"
                   >
                     ${card.id}
                   </div>
 
                 </div>
+
 
               </div>
 
@@ -661,6 +1460,7 @@
             results.appendChild(
               cardElement
             );
+
 
           });
 
@@ -691,11 +1491,10 @@
 
 
 
-    /*
-    ==========================================
-    CARREGAR CARTA
-    ==========================================
-    */
+    /* =====================================================
+       CARREGAR CARTA
+    ===================================================== */
+
 
     async function loadCard(cardId) {
 
@@ -705,10 +1504,16 @@
         );
 
 
+      if (!results) {
+        return;
+      }
+
+
       results.innerHTML = `
 
         <p style="margin-top:15px;">
-          🔄 A carregar informação da carta...
+          🔄 A carregar informação
+          da carta...
         </p>
 
       `;
@@ -724,9 +1529,11 @@
 
 
         if (!response.ok) {
+
           throw new Error(
             "Erro ao carregar carta"
           );
+
         }
 
 
@@ -735,8 +1542,7 @@
 
 
         /*
-        Guardamos a carta selecionada
-        para o botão "Adicionar".
+        Guardar carta selecionada.
         */
 
         window.selectedCard =
@@ -752,36 +1558,36 @@
           market &&
           market.avg != null
 
-            ? market.avg.toFixed(2) + " €"
+            ? Number(market.avg)
 
-            : "Sem preço disponível";
+            : 0;
 
 
         const trend =
           market &&
           market.trend != null
 
-            ? market.trend.toFixed(2) + " €"
+            ? Number(market.trend)
 
-            : "—";
+            : null;
 
 
         const avg7 =
           market &&
           market.avg7 != null
 
-            ? market.avg7.toFixed(2) + " €"
+            ? Number(market.avg7)
 
-            : "—";
+            : null;
 
 
         const avg30 =
           market &&
           market.avg30 != null
 
-            ? market.avg30.toFixed(2) + " €"
+            ? Number(market.avg30)
 
-            : "—";
+            : null;
 
 
         const image =
@@ -792,15 +1598,7 @@
 
         results.innerHTML = `
 
-          <div
-            style="
-              margin-top:20px;
-              padding:20px;
-              background:#161b22;
-              border-radius:20px;
-              text-align:center;
-            "
-          >
+          <div class="card-details">
 
 
             ${
@@ -808,32 +1606,21 @@
                 ? `
                   <img
                     src="${image}"
-                    style="
-                      width:180px;
-                      max-width:70%;
-                      border-radius:12px;
-                    "
+                    class="card-details-image"
+                    alt="${card.name}"
                   >
                 `
                 : ""
             }
 
 
-            <h2
-              style="
-                margin-top:15px;
-              "
-            >
+            <h2>
               ${card.name}
             </h2>
 
 
-            <p
-              style="
-                color:#9ca3af;
-                margin-top:6px;
-              "
-            >
+            <p class="card-details-subtitle">
+
               ${
                 card.set
                   ? card.set.name
@@ -845,81 +1632,73 @@
               ${
                 card.localId || ""
               }
+
             </p>
 
 
-            <p
-              style="
-                margin-top:8px;
-              "
-            >
+            <p style="margin-top:8px;">
+
               ⭐
+
               ${
                 card.rarity ||
                 "Raridade desconhecida"
               }
+
             </p>
 
 
-            <div
-              style="
-                margin-top:20px;
-                padding:15px;
-                background:#0d1117;
-                border-radius:15px;
-                text-align:left;
-              "
-            >
+            <div class="market-box">
 
               <h3>
                 💰 Cardmarket
               </h3>
 
 
-              <p
-                style="
-                  margin-top:10px;
-                "
-              >
+              <p>
                 Média:
                 <strong>
-                  ${price}
+                  ${
+                    price > 0
+                      ? formatPrice(price)
+                      : "Sem preço disponível"
+                  }
                 </strong>
               </p>
 
 
-              <p
-                style="
-                  margin-top:6px;
-                "
-              >
+              <p>
                 Tendência:
                 <strong>
-                  ${trend}
+                  ${
+                    trend !== null
+                      ? formatPrice(trend)
+                      : "—"
+                  }
                 </strong>
               </p>
 
 
-              <p
-                style="
-                  margin-top:6px;
-                "
-              >
+              <p>
                 Média 7 dias:
                 <strong>
-                  ${avg7}
+                  ${
+                    avg7 !== null
+                      ? formatPrice(avg7)
+                      : "—"
+                  }
                 </strong>
               </p>
 
 
-              <p
-                style="
-                  margin-top:6px;
-                "
-              >
+              <p>
                 Média 30 dias:
                 <strong>
-                  ${avg30}
+                  ${
+                    avg30 !== null
+                      ? formatPrice(avg30)
+                      : "—"
+                  }
                 </strong>
               </p>
 
@@ -927,19 +1706,8 @@
 
 
             <button
+              class="add-button"
               onclick="addToPortfolio()"
-              style="
-                width:100%;
-                padding:15px;
-                margin-top:15px;
-                border:0;
-                border-radius:12px;
-                background:#ffcc00;
-                color:#111827;
-                font-size:16px;
-                font-weight:bold;
-                cursor:pointer;
-              "
             >
               ➕ Adicionar ao meu portfólio
             </button>
@@ -975,11 +1743,10 @@
 
 
 
-    /*
-    ==========================================
-    ADICIONAR CARTA AO PORTFÓLIO
-    ==========================================
-    */
+    /* =====================================================
+       ADICIONAR AO PORTFÓLIO
+    ===================================================== */
+
 
     function addToPortfolio() {
 
@@ -998,42 +1765,22 @@
       }
 
 
-      /*
-      Recuperar portfólio existente
-      */
-
       let portfolio =
-        JSON.parse(
-          localStorage.getItem(
-            "pokePortfolio"
-          )
-        ) || [];
+        getPortfolio();
 
 
       /*
-      Verificar se a carta
-      já existe
+      Verificar se a carta já existe.
       */
 
-      const alreadyExists =
-        portfolio.some(
+      const existing =
+        portfolio.find(
           item => item.id === card.id
         );
 
 
-      if (alreadyExists) {
-
-        alert(
-          "⚠️ Esta carta já está no teu portfólio."
-        );
-
-        return;
-
-      }
-
-
       /*
-      Obter preço atual
+      Preço atual.
       */
 
       const market =
@@ -1051,14 +1798,59 @@
 
 
       /*
-      Criar objeto da carta
+      Se já existe:
+
+      +1 quantidade
+      */
+
+      if (existing) {
+
+        existing.quantity =
+          Number(existing.quantity || 1) + 1;
+
+
+        /*
+        Atualizar o preço para
+        o preço mais recente obtido.
+        */
+
+        if (price > 0) {
+
+          existing.price =
+            price;
+
+        }
+
+
+        savePortfolio(
+          portfolio
+        );
+
+
+        renderPortfolio();
+
+
+        alert(
+          `✅ ${card.name} adicionado novamente!\n\nQuantidade: ${existing.quantity}`
+        );
+
+
+        return;
+
+      }
+
+
+      /*
+      Criar nova carta.
       */
 
       const portfolioCard = {
 
-        id: card.id,
+        id:
+          card.id,
 
-        name: card.name,
+        name:
+          card.name,
 
         set:
           card.set
@@ -1075,33 +1867,23 @@
           card.image || "",
 
         price:
-          price
+          price,
+
+        quantity:
+          1
 
       };
 
-
-      /*
-      Adicionar ao portfólio
-      */
 
       portfolio.push(
         portfolioCard
       );
 
 
-      /*
-      Guardar no navegador
-      */
-
-      localStorage.setItem(
-        "pokePortfolio",
-        JSON.stringify(portfolio)
+      savePortfolio(
+        portfolio
       );
 
-
-      /*
-      Atualizar interface
-      */
 
       renderPortfolio();
 
@@ -1114,20 +1896,351 @@
 
 
 
-    /*
-    ==========================================
-    MOSTRAR PORTFÓLIO
-    ==========================================
-    */
+    /* =====================================================
+       ALTERAR QUANTIDADE
+    ===================================================== */
+
+
+    function changeQuantity(
+      cardId,
+      change
+    ) {
+
+      const portfolio =
+        getPortfolio();
+
+
+      const card =
+        portfolio.find(
+          item => item.id === cardId
+        );
+
+
+      if (!card) {
+        return;
+      }
+
+
+      card.quantity =
+        Number(card.quantity || 1) +
+        change;
+
+
+      /*
+      Nunca permitir quantidade
+      inferior a 1 através destes
+      botões.
+      */
+
+      if (card.quantity < 1) {
+
+        card.quantity = 1;
+
+      }
+
+
+      savePortfolio(
+        portfolio
+      );
+
+
+      renderPortfolio();
+
+    }
+
+
+
+    /* =====================================================
+       REMOVER CARTA
+    ===================================================== */
+
+
+    function removeFromPortfolio(
+      cardId
+    ) {
+
+      const portfolio =
+        getPortfolio();
+
+
+      const card =
+        portfolio.find(
+          item => item.id === cardId
+        );
+
+
+      if (!card) {
+        return;
+      }
+
+
+      const confirmed =
+        confirm(
+          `Remover ${card.name} da tua coleção?`
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      const newPortfolio =
+        portfolio.filter(
+          item => item.id !== cardId
+        );
+
+
+      savePortfolio(
+        newPortfolio
+      );
+
+
+      renderPortfolio();
+
+    }
+
+
+
+    /* =====================================================
+       DETALHES DA CARTA DO PORTFÓLIO
+    ===================================================== */
+
+
+    function openPortfolioCard(
+      cardId
+    ) {
+
+      const portfolio =
+        getPortfolio();
+
+
+      const card =
+        portfolio.find(
+          item => item.id === cardId
+        );
+
+
+      if (!card) {
+        return;
+      }
+
+
+      const image =
+        card.image
+          ? card.image + "/high.webp"
+          : "";
+
+
+      const quantity =
+        Number(card.quantity || 1);
+
+
+      const unitPrice =
+        Number(card.price || 0);
+
+
+      const totalValue =
+        unitPrice *
+        quantity;
+
+
+      const overlay =
+        document.createElement("div");
+
+
+      overlay.className =
+        "modal-overlay";
+
+
+      overlay.id =
+        "card-modal";
+
+
+      overlay.innerHTML = `
+
+        <div class="modal">
+
+
+          ${
+            image
+              ? `
+                <img
+                  src="${image}"
+                  class="modal-image"
+                  alt="${card.name}"
+                >
+              `
+              : ""
+          }
+
+
+          <h2>
+            ${card.name}
+          </h2>
+
+
+          <p class="modal-subtitle">
+
+            ${card.set}
+
+            ·
+
+            ${card.localId}
+
+          </p>
+
+
+          <p
+            style="
+              margin-top:8px;
+            "
+          >
+
+            ⭐
+
+            ${
+              card.rarity ||
+              "Raridade desconhecida"
+            }
+
+          </p>
+
+
+          <div class="modal-info">
+
+
+            <div class="modal-info-row">
+
+              <span class="modal-label">
+                Quantidade
+              </span>
+
+              <strong>
+                ${quantity}
+              </strong>
+
+            </div>
+
+
+            <div class="modal-info-row">
+
+              <span class="modal-label">
+                Valor unitário
+              </span>
+
+              <strong>
+                ${
+                  unitPrice > 0
+                    ? formatPrice(unitPrice)
+                    : "Sem preço"
+                }
+              </strong>
+
+            </div>
+
+
+            <div class="modal-info-row">
+
+              <span class="modal-label">
+                Valor total
+              </span>
+
+              <strong
+                style="
+                  color:#ffcb05;
+                "
+              >
+                ${
+                  totalValue > 0
+                    ? formatPrice(totalValue)
+                    : "Sem preço"
+                }
+              </strong>
+
+            </div>
+
+
+          </div>
+
+
+          <button
+            class="modal-close"
+            onclick="closeCardModal()"
+          >
+            Fechar
+          </button>
+
+
+        </div>
+
+      `;
+
+
+      /*
+      Clicar fora do modal fecha-o.
+      */
+
+      overlay.addEventListener(
+        "click",
+        function(event) {
+
+          if (
+            event.target === overlay
+          ) {
+
+            closeCardModal();
+
+          }
+
+        }
+      );
+
+
+      document.body.appendChild(
+        overlay
+      );
+
+    }
+
+
+
+    function closeCardModal() {
+
+      const modal =
+        document.getElementById(
+          "card-modal"
+        );
+
+
+      if (modal) {
+        modal.remove();
+      }
+
+    }
+
+
+
+    /* =====================================================
+       MOSTRAR PORTFÓLIO
+    ===================================================== */
+
 
     function renderPortfolio() {
 
-      const portfolio =
-        JSON.parse(
-          localStorage.getItem(
-            "pokePortfolio"
-          )
-        ) || [];
+      let portfolio =
+        getPortfolio();
+
+
+      /*
+      Guardar novamente para garantir
+      que cartas antigas recebem
+      quantity = 1.
+      */
+
+      savePortfolio(
+        portfolio
+      );
 
 
       const collection =
@@ -1149,35 +2262,75 @@
 
 
       /*
-      Atualizar quantidade
+      ===============================
+      TOTAL DE CARTAS
+      ===============================
       */
 
+      const totalCards =
+        portfolio.reduce(
+          (
+            sum,
+            card
+          ) =>
+            sum +
+            Number(
+              card.quantity || 1
+            ),
+          0
+        );
+
+
       cardsCount.textContent =
-        portfolio.length;
+        totalCards;
 
 
       /*
-      Calcular valor total
+      ===============================
+      VALOR TOTAL
+      ===============================
       */
 
       const total =
         portfolio.reduce(
-          (sum, card) =>
-            sum +
-            (Number(card.price) || 0),
+          (
+            sum,
+            card
+          ) => {
+
+            const quantity =
+              Number(
+                card.quantity || 1
+              );
+
+
+            const price =
+              Number(
+                card.price
+              ) || 0;
+
+
+            return (
+              sum +
+              (
+                price *
+                quantity
+              )
+            );
+
+          },
           0
         );
 
 
       totalValue.textContent =
-        total
-          .toFixed(2)
-          .replace(".", ",") +
-        " €";
+        formatPrice(total);
 
 
       /*
-      Se não houver cartas
+      ===============================
+      PORTFÓLIO VAZIO
+      ===============================
       */
 
       if (
@@ -1193,11 +2346,13 @@
             </div>
 
             <p>
+
               Ainda não tens cartas
               na tua coleção.<br>
 
               Digitaliza a tua primeira
               carta para começar.
+
             </p>
 
           </div>
@@ -1210,48 +2365,22 @@
 
 
       /*
-      Limpar coleção
+      ===============================
+      CONSTRUIR COLEÇÃO
+      ===============================
       */
 
       collection.innerHTML = "";
 
 
-      /*
-      Mostrar cada carta
-      */
-
       portfolio.forEach(
         card => {
 
-          const cardElement =
-            document.createElement(
-              "div"
+
+          const quantity =
+            Number(
+              card.quantity || 1
             );
-
-
-          cardElement.style.display =
-            "flex";
-
-          cardElement.style.alignItems =
-            "center";
-
-          cardElement.style.gap =
-            "15px";
-
-          cardElement.style.padding =
-            "12px";
-
-          cardElement.style.marginBottom =
-            "12px";
-
-          cardElement.style.background =
-            "#0d1117";
-
-          cardElement.style.border =
-            "1px solid #30363d";
-
-          cardElement.style.borderRadius =
-            "15px";
 
 
           const image =
@@ -1261,17 +2390,36 @@
               : "";
 
 
+          const cardElement =
+            document.createElement(
+              "div"
+            );
+
+
+          cardElement.className =
+            "portfolio-card";
+
+
+          /*
+          Clique na carta abre detalhes.
+          */
+
+          cardElement.onclick =
+            () => openPortfolioCard(
+              card.id
+            );
+
+
           cardElement.innerHTML = `
+
 
             ${
               image
                 ? `
                   <img
                     src="${image}"
-                    style="
-                      width:70px;
-                      border-radius:8px;
-                    "
+                    class="portfolio-card-image"
+                    alt="${card.name}"
                   >
                 `
                 : ""
@@ -1279,54 +2427,101 @@
 
 
             <div
-              style="
-                text-align:left;
-                flex:1;
-              "
+              class="portfolio-card-info"
             >
 
-              <strong
-                style="
-                  font-size:16px;
-                "
+
+              <span
+                class="portfolio-card-name"
               >
                 ${card.name}
-              </strong>
+              </span>
 
 
               <div
-                style="
-                  color:#9ca3af;
-                  font-size:13px;
-                  margin-top:5px;
-                "
+                class="portfolio-card-set"
               >
                 ${card.set}
               </div>
 
 
               <div
-                style="
-                  color:#ffcb05;
-                  font-weight:bold;
-                  margin-top:5px;
-                "
+                class="portfolio-card-price"
               >
 
                 ${
                   card.price > 0
 
-                    ? card.price
-                        .toFixed(2)
-                        .replace(".", ",") +
-                      " €"
+                    ? formatPrice(
+                        card.price
+                      )
 
                     : "Sem preço"
+
                 }
 
               </div>
 
+
+              <div
+                class="quantity-box"
+              >
+
+
+                <button
+                  class="quantity-button"
+                  onclick="
+                    event.stopPropagation();
+                    changeQuantity(
+                      '${card.id}',
+                      -1
+                    );
+                  "
+                >
+                  −
+                </button>
+
+
+                <span
+                  class="quantity-number"
+                >
+                  ${quantity}
+                </span>
+
+
+                <button
+                  class="quantity-button"
+                  onclick="
+                    event.stopPropagation();
+                    changeQuantity(
+                      '${card.id}',
+                      1
+                    );
+                  "
+                >
+                  +
+                </button>
+
+
+              </div>
+
+
             </div>
+
+
+            <button
+              class="delete-button"
+              title="Remover carta"
+              onclick="
+                event.stopPropagation();
+                removeFromPortfolio(
+                  '${card.id}'
+                );
+              "
+            >
+              🗑️
+            </button>
+
 
           `;
 
@@ -1335,6 +2530,7 @@
             cardElement
           );
 
+
         }
       );
 
@@ -1342,16 +2538,16 @@
 
 
 
-    /*
-    ==========================================
-    INICIAR PORTFÓLIO
-    ==========================================
-    */
+    /* =====================================================
+       INICIALIZAÇÃO
+    ===================================================== */
+
 
     renderPortfolio();
 
 
   </script>
+
 
 </body>
 </html>
