@@ -235,47 +235,421 @@
 
   </div>
 
- <script>
+  <script>
 
-function scanCard() {
-  const input = document.createElement("input");
+    function scanCard() {
 
-  input.type = "file";
-  input.accept = "image/*";
-  input.setAttribute("capture", "environment");
+      const input = document.createElement("input");
 
-  input.onchange = function () {
-    if (!input.files || !input.files[0]) return;
+      input.type = "file";
+      input.accept = "image/*";
+      input.setAttribute("capture", "environment");
 
-    const file = input.files[0];
-    const imageURL = URL.createObjectURL(file);
+      input.onchange = function () {
 
-    const preview = document.createElement("div");
+        if (!input.files || !input.files[0]) return;
 
-    preview.style.marginTop = "20px";
-    preview.style.padding = "20px";
-    preview.style.background = "#161b22";
-    preview.style.borderRadius = "20px";
-    preview.style.textAlign = "center";
+        const file = input.files[0];
+        const imageURL = URL.createObjectURL(file);
 
-    preview.innerHTML = `
-      <h3>📸 Carta fotografada!</h3>
-      <img 
-        src="${imageURL}" 
-        style="max-width:100%; border-radius:12px; margin-top:10px;"
-      >
-      <p style="color:#9ca3af; margin-top:10px;">
-        Próximo passo: identificar a carta com IA.
-      </p>
-    `;
+        let oldPreview = document.getElementById("scanner-preview");
 
-    document.body.appendChild(preview);
-  };
+        if (oldPreview) {
+          oldPreview.remove();
+        }
 
-  input.click();
-}
+        const preview = document.createElement("div");
 
-</script>
+        preview.id = "scanner-preview";
+
+        preview.style.marginTop = "20px";
+        preview.style.padding = "20px";
+        preview.style.background = "#161b22";
+        preview.style.borderRadius = "20px";
+        preview.style.textAlign = "center";
+
+        preview.innerHTML = `
+
+          <h3>📸 Carta fotografada!</h3>
+
+          <img
+            src="${imageURL}"
+            style="
+              max-width:100%;
+              border-radius:12px;
+              margin-top:10px;
+            "
+          >
+
+          <div style="
+            margin-top:20px;
+            padding-top:20px;
+            border-top:1px solid #30363d;
+          ">
+
+            <h3>🔎 Identificar carta</h3>
+
+            <p style="
+              color:#9ca3af;
+              margin-top:8px;
+              margin-bottom:10px;
+            ">
+              Por enquanto, escreve o nome da carta.
+              Em breve vamos automatizar esta parte com IA.
+            </p>
+
+            <input
+              id="card-search"
+              type="text"
+              placeholder="Ex: Mew ex"
+              style="
+                width:100%;
+                padding:14px;
+                border-radius:12px;
+                border:1px solid #30363d;
+                background:#0d1117;
+                color:white;
+                font-size:16px;
+                box-sizing:border-box;
+                margin-top:10px;
+              "
+            >
+
+            <button
+              onclick="searchCard()"
+              style="
+                width:100%;
+                padding:14px;
+                margin-top:10px;
+                border:0;
+                border-radius:12px;
+                background:#ffcc00;
+                color:#111827;
+                font-size:16px;
+                font-weight:bold;
+                cursor:pointer;
+              "
+            >
+              🔍 Procurar carta
+            </button>
+
+            <div id="search-results"></div>
+
+          </div>
+        `;
+
+        document.body.appendChild(preview);
+      };
+
+      input.click();
+    }
+
+
+    async function searchCard() {
+
+      const input = document.getElementById("card-search");
+      const results = document.getElementById("search-results");
+
+      const name = input.value.trim();
+
+      if (!name) {
+
+        results.innerHTML = `
+          <p style="
+            color:#ff6b6b;
+            margin-top:15px;
+          ">
+            Escreve primeiro o nome da carta.
+          </p>
+        `;
+
+        return;
+      }
+
+      results.innerHTML = `
+        <p style="margin-top:15px;">
+          🔄 A procurar na base de dados...
+        </p>
+      `;
+
+      try {
+
+        const url =
+          "https://api.tcgdex.net/v2/en/cards?name=" +
+          encodeURIComponent(name);
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error("Erro na API");
+        }
+
+        const cards = await response.json();
+
+        if (!cards || cards.length === 0) {
+
+          results.innerHTML = `
+            <p style="
+              color:#ff6b6b;
+              margin-top:15px;
+            ">
+              ❌ Não encontrei nenhuma carta com esse nome.
+            </p>
+          `;
+
+          return;
+        }
+
+        results.innerHTML = `
+          <h3 style="margin-top:20px;">
+            🃏 Resultados encontrados
+          </h3>
+        `;
+
+        cards.slice(0, 8).forEach(card => {
+
+          const cardElement = document.createElement("div");
+
+          cardElement.style.marginTop = "15px";
+          cardElement.style.padding = "12px";
+          cardElement.style.background = "#0d1117";
+          cardElement.style.border = "1px solid #30363d";
+          cardElement.style.borderRadius = "16px";
+          cardElement.style.cursor = "pointer";
+
+          const image = card.image
+            ? card.image + "/low.webp"
+            : "";
+
+          cardElement.innerHTML = `
+
+            <div style="
+              display:flex;
+              align-items:center;
+              gap:12px;
+            ">
+
+              ${
+                image
+                ? `<img
+                    src="${image}"
+                    style="
+                      width:70px;
+                      border-radius:8px;
+                    "
+                  >`
+                : ""
+              }
+
+              <div style="text-align:left;">
+
+                <strong style="font-size:16px;">
+                  ${card.name}
+                </strong>
+
+                <div style="
+                  color:#9ca3af;
+                  margin-top:5px;
+                ">
+                  ${card.id}
+                </div>
+
+              </div>
+
+            </div>
+          `;
+
+          cardElement.onclick = () => loadCard(card.id);
+
+          results.appendChild(cardElement);
+
+        });
+
+      } catch (error) {
+
+        console.error(error);
+
+        results.innerHTML = `
+          <p style="
+            color:#ff6b6b;
+            margin-top:15px;
+          ">
+            ⚠️ Não foi possível contactar a base de dados.
+            Tenta novamente.
+          </p>
+        `;
+      }
+    }
+
+
+    async function loadCard(cardId) {
+
+      const results = document.getElementById("search-results");
+
+      results.innerHTML = `
+        <p style="margin-top:15px;">
+          🔄 A carregar informação da carta...
+        </p>
+      `;
+
+      try {
+
+        const response = await fetch(
+          "https://api.tcgdex.net/v2/en/cards/" +
+          encodeURIComponent(cardId)
+        );
+
+        if (!response.ok) {
+          throw new Error("Erro ao carregar carta");
+        }
+
+        const card = await response.json();
+
+        const market =
+          card.pricing &&
+          card.pricing.cardmarket;
+
+        const price =
+          market && market.avg != null
+            ? market.avg.toFixed(2) + " €"
+            : "Sem preço disponível";
+
+        const trend =
+          market && market.trend != null
+            ? market.trend.toFixed(2) + " €"
+            : "—";
+
+        const avg7 =
+          market && market.avg7 != null
+            ? market.avg7.toFixed(2) + " €"
+            : "—";
+
+        const avg30 =
+          market && market.avg30 != null
+            ? market.avg30.toFixed(2) + " €"
+            : "—";
+
+        const image =
+          card.image
+            ? card.image + "/high.webp"
+            : "";
+
+        results.innerHTML = `
+
+          <div style="
+            margin-top:20px;
+            padding:20px;
+            background:#161b22;
+            border-radius:20px;
+          ">
+
+            ${
+              image
+              ? `<img
+                  src="${image}"
+                  style="
+                    width:180px;
+                    max-width:70%;
+                    border-radius:12px;
+                  "
+                >`
+              : ""
+            }
+
+            <h2 style="margin-top:15px;">
+              ${card.name}
+            </h2>
+
+            <p style="
+              color:#9ca3af;
+              margin-top:6px;
+            ">
+              ${card.set ? card.set.name : ""}
+              · ${card.localId || ""}
+            </p>
+
+            <p style="margin-top:8px;">
+              ⭐ ${card.rarity || "Raridade desconhecida"}
+            </p>
+
+            <div style="
+              margin-top:20px;
+              padding:15px;
+              background:#0d1117;
+              border-radius:15px;
+              text-align:left;
+            ">
+
+              <h3>💰 Cardmarket</h3>
+
+              <p style="margin-top:10px;">
+                Média:
+                <strong>${price}</strong>
+              </p>
+
+              <p style="margin-top:6px;">
+                Tendência:
+                <strong>${trend}</strong>
+              </p>
+
+              <p style="margin-top:6px;">
+                Média 7 dias:
+                <strong>${avg7}</strong>
+              </p>
+
+              <p style="margin-top:6px;">
+                Média 30 dias:
+                <strong>${avg30}</strong>
+              </p>
+
+            </div>
+
+            <button
+              onclick="addToPortfolio()"
+              style="
+                width:100%;
+                padding:15px;
+                margin-top:15px;
+                border:0;
+                border-radius:12px;
+                background:#ffcc00;
+                color:#111827;
+                font-size:16px;
+                font-weight:bold;
+                cursor:pointer;
+              "
+            >
+              ➕ Adicionar ao meu portfólio
+            </button>
+
+          </div>
+        `;
+
+      } catch (error) {
+
+        console.error(error);
+
+        results.innerHTML = `
+          <p style="
+            color:#ff6b6b;
+            margin-top:15px;
+          ">
+            ⚠️ Não foi possível carregar os dados desta carta.
+          </p>
+        `;
+      }
+    }
+
+
+    function addToPortfolio() {
+
+      alert(
+        "🗂️ Excelente! A função de guardar cartas no portfólio será a próxima etapa."
+      );
+
+    }
+
+  </script>
 
 </body>
 </html>
