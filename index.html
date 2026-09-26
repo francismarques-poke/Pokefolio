@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>PokéPortfolio</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0d1117;
+      color: white;
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 500px;
+      margin: auto;
+      padding: 24px 18px 40px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .logo span {
+      color: #ffcb05;
+    }
+
+    .profile {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #1f2937;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .welcome {
+      margin-bottom: 24px;
+    }
+
+    .welcome h1 {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      color: #8b949e;
+      font-size: 15px;
+    }
+
+    .scan-card {
+      background: linear-gradient(135deg, #ffcb05, #f59e0b);
+      color: #111827;
+      border-radius: 22px;
+      padding: 25px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(255, 203, 5, 0.12);
+    }
+
+    .scan-icon {
+      font-size: 42px;
+      margin-bottom: 12px;
+    }
+
+    .scan-card h2 {
+      font-size: 22px;
+      margin-bottom: 7px;
+    }
+
+    .scan-card p {
+      font-size: 14px;
+      margin-bottom: 18px;
+      opacity: 0.8;
+    }
+
+    .scan-button {
+      border: none;
+      background: #111827;
+      color: white;
+      width: 100%;
+      padding: 14px;
+      border-radius: 13px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .section-title {
+      font-size: 19px;
+      margin-bottom: 12px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .stat {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .stat-label {
+      color: #8b949e;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .stat-value {
+      font-size: 23px;
+      font-weight: 800;
+    }
+
+    .collection {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 25px 10px;
+      color: #8b949e;
+    }
+
+    .empty-icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .empty p {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      color: #484f58;
+      font-size: 12px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <header>
+      <div class="logo">Poké<span>Portfolio</span></div>
+      <div class="profile">👤</div>
+    </header>
+
+    <section class="welcome">
+      <h1>A tua coleção.</h1>
+      <p>Organiza, acompanha e descobre o valor das tuas cartas.</p>
+    </section>
+
+    <section class="scan-card">
+
+      <div class="scan-icon">📸</div>
+
+      <h2>Scan a Card</h2>
+
+      <p>
+        Fotografa uma carta e deixa o PokéPortfolio identificá-la.
+      </p>
+
+      <button class="scan-button" onclick="scanCard()">
+        📷 Digitalizar carta
+      </button>
+
+    </section>
+
+    <h2 class="section-title">O teu portfólio</h2>
+
+    <section class="stats">
+
+      <div class="stat">
+        <div class="stat-label">Cartas</div>
+        <div class="stat-value">0</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Valor estimado</div>
+        <div class="stat-value">€0,00</div>
+      </div>
+
+    </section>
+
+    <h2 class="section-title">A minha coleção</h2>
+
+    <section class="collection">
+
+      <div class="empty">
+
+        <div class="empty-icon">🃏</div>
+
+        <p>
+          Ainda não tens cartas na tua coleção.<br>
+          Digitaliza a tua primeira carta para começar.
+        </p>
+
+      </div>
+
+    </section>
+
+    <footer>
+      PokéPortfolio · Projeto em desenvolvimento
+    </footer>
+
+  </div>
+
+  <script>
+
+    function scanCard() {
+      alert("📸 Scanner de cartas — em breve!");
+    }
+
+  </script>
+
+</body>
+</html>
