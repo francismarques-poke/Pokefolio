@@ -151,6 +151,20 @@
     width: 100%; padding: 15px; margin-top: 15px; border: 0; border-radius: 12px;
     background: #ffcc00; color: #111827; font-size: 16px; font-weight: bold; cursor: pointer;
   }
+  .wantlist-button {
+    width: 100%; padding: 15px; margin-top: 10px; border: 1px solid #30363d; border-radius: 12px;
+    background: #0d1117; color: #ff6b8d; font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+  .wantlist-button:active { transform: scale(0.98); }
+
+  /* WANTLIST */
+  .wantlist-box { background: #161b22; border: 1px solid #30363d; border-radius: 18px; padding: 14px; }
+  .wantlist-actions { display: flex; gap: 8px; margin-top: 8px; }
+  .buy-button {
+    flex: 1; padding: 9px 10px; border: none; border-radius: 8px;
+    background: #3fb950; color: #0d1117; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .buy-button:active { transform: scale(0.97); }
 
   /* MODAL (shared by card details, settings, confirm) */
   .modal-overlay {
@@ -310,6 +324,15 @@
     </div>
   </section>
 
+  <h2 class="section-title">❤️ Wantlist</h2>
+
+  <section class="wantlist-box" id="wantlist-section">
+    <div class="empty">
+      <div class="empty-icon">❤️</div>
+      <p>Ainda não tens cartas na tua wantlist.<br>Adiciona cartas que queres comprar a partir da pesquisa.</p>
+    </div>
+  </section>
+
   <footer>PokéPortfolio · Projeto em desenvolvimento</footer>
 
 </div>
@@ -340,6 +363,20 @@ function getPortfolio() {
 
 function savePortfolio(portfolio) {
   localStorage.setItem("pokePortfolio", JSON.stringify(portfolio));
+}
+
+function getWantlist() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("pokeWantlist"));
+    return Array.isArray(saved) ? saved : [];
+  } catch (error) {
+    console.error("Erro ao ler wantlist:", error);
+    return [];
+  }
+}
+
+function saveWantlist(wantlist) {
+  localStorage.setItem("pokeWantlist", JSON.stringify(wantlist));
 }
 
 function formatPrice(value) {
@@ -556,6 +593,7 @@ async function loadCard(cardId) {
         </div>
 
         <button class="add-button" onclick="addToPortfolio()">➕ Adicionar ao meu portfólio</button>
+        <button class="wantlist-button" onclick="addToWantlist()">❤️ Adicionar à Wantlist</button>
       </div>
     `;
 
@@ -609,6 +647,134 @@ function addToPortfolio() {
   savePortfolio(portfolio);
   renderPortfolio();
   showToast("Carta adicionada ao teu portfólio!", "success");
+}
+
+/* =====================================================
+   WANTLIST (novo)
+===================================================== */
+
+function addToWantlist() {
+  const card = window.selectedCard;
+
+  if (!card) {
+    showToast("Nenhuma carta selecionada.", "error");
+    return;
+  }
+
+  const wantlist = getWantlist();
+  const existing = wantlist.find(item => item.id === card.id);
+
+  if (existing) {
+    showToast(`${card.name} já está na tua wantlist.`, "info");
+    return;
+  }
+
+  const market = card.pricing && card.pricing.cardmarket;
+  const price = market && market.avg != null ? Number(market.avg) : 0;
+
+  wantlist.push({
+    id: card.id,
+    name: card.name,
+    set: card.set ? card.set.name : "",
+    localId: card.localId || "",
+    rarity: card.rarity || "",
+    image: card.image || "",
+    price: price,
+    dateAdded: Date.now()
+  });
+
+  saveWantlist(wantlist);
+  renderWantlist();
+  showToast(`${card.name} adicionado à wantlist!`, "success");
+}
+
+function removeFromWantlist(cardId) {
+  const wantlist = getWantlist();
+  const card = wantlist.find(item => item.id === cardId);
+  if (!card) return;
+
+  showConfirm(`Remover ${card.name} da tua wantlist?`, function () {
+    const newWantlist = wantlist.filter(item => item.id !== cardId);
+    saveWantlist(newWantlist);
+    renderWantlist();
+    showToast(`${card.name} removido da wantlist.`, "info");
+  });
+}
+
+function buyWantlistCard(cardId) {
+  const wantlist = getWantlist();
+  const card = wantlist.find(item => item.id === cardId);
+  if (!card) return;
+
+  let portfolio = getPortfolio();
+  const existing = portfolio.find(item => item.id === card.id);
+
+  if (existing) {
+    existing.quantity = Number(existing.quantity || 1) + 1;
+  } else {
+    portfolio.push({
+      id: card.id,
+      name: card.name,
+      set: card.set || "",
+      localId: card.localId || "",
+      rarity: card.rarity || "",
+      image: card.image || "",
+      price: Number(card.price) || 0,
+      quantity: 1,
+      dateAdded: Date.now()
+    });
+  }
+
+  savePortfolio(portfolio);
+
+  const newWantlist = wantlist.filter(item => item.id !== cardId);
+  saveWantlist(newWantlist);
+
+  renderPortfolio();
+  renderWantlist();
+  showToast(`${card.name} movida para o teu portfólio! 🎉`, "success");
+}
+
+function renderWantlist() {
+  const wantlist = getWantlist();
+  const container = document.getElementById("wantlist-section");
+  if (!container) return;
+
+  if (wantlist.length === 0) {
+    container.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">❤️</div>
+        <p>Ainda não tens cartas na tua wantlist.<br>Adiciona cartas que queres comprar a partir da pesquisa.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = "";
+
+  wantlist.forEach(card => {
+    const image = card.image ? card.image + "/low.webp" : "";
+
+    const cardElement = document.createElement("div");
+    cardElement.className = "portfolio-card";
+
+    cardElement.innerHTML = `
+      ${image ? `<img src="${image}" class="portfolio-card-image" alt="${card.name}">` : ""}
+
+      <div class="portfolio-card-info">
+        <span class="portfolio-card-name">${card.name}</span>
+        <div class="portfolio-card-set">${card.set}</div>
+        <div class="portfolio-card-price">${card.price > 0 ? formatPrice(card.price) : "Sem preço"}</div>
+
+        <div class="wantlist-actions">
+          <button class="buy-button" onclick="event.stopPropagation(); buyWantlistCard('${card.id}');">✅ Comprei</button>
+          <button class="delete-button" title="Remover da wantlist" onclick="event.stopPropagation(); removeFromWantlist('${card.id}');">🗑️</button>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(cardElement);
+  });
 }
 
 /* =====================================================
@@ -839,6 +1005,7 @@ function saveCardEdit(cardId) {
 
 function openSettingsMenu() {
   const portfolio = getPortfolio();
+  const wantlist = getWantlist();
   const totalCards = portfolio.reduce((sum, c) => sum + Number(c.quantity || 1), 0);
 
   const overlay = document.createElement("div");
@@ -862,8 +1029,8 @@ function openSettingsMenu() {
       </button>
 
       <p class="settings-info">
-        ${totalCards} carta(s) guardada(s) neste dispositivo (localStorage).
-        Exporta regularmente para não perderes a tua coleção caso limpes o navegador.
+        ${totalCards} carta(s) na coleção · ${wantlist.length} na wantlist.
+        Dados guardados neste dispositivo (localStorage) — exporta regularmente para não os perderes caso limpes o navegador.
       </p>
 
       <button class="modal-close" onclick="closeSettingsModal()">Fechar</button>
@@ -933,16 +1100,18 @@ async function refreshPrices() {
 
 function exportCollection() {
   const portfolio = getPortfolio();
+  const wantlist = getWantlist();
 
-  if (portfolio.length === 0) {
-    showToast("Não há cartas para exportar.", "info");
+  if (portfolio.length === 0 && wantlist.length === 0) {
+    showToast("Não há dados para exportar.", "info");
     return;
   }
 
   const data = {
     app: "PokePortfolio",
     exportedAt: new Date().toISOString(),
-    cards: portfolio
+    cards: portfolio,
+    wantlist: wantlist
   };
 
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
@@ -1015,9 +1184,41 @@ function triggerImport() {
         });
 
         savePortfolio(portfolio);
+
+        /* Wantlist é opcional: exportações antigas não a têm */
+        let wantlistAdded = 0;
+        const importedWantlist = Array.isArray(parsed.wantlist) ? parsed.wantlist : [];
+
+        if (importedWantlist.length > 0) {
+          const wantlist = getWantlist();
+
+          importedWantlist.forEach(imported => {
+            if (!imported || !imported.id) return;
+            const alreadyThere = wantlist.find(item => item.id === imported.id);
+            if (alreadyThere) return;
+
+            wantlist.push({
+              id: imported.id,
+              name: imported.name || "Carta",
+              set: imported.set || "",
+              localId: imported.localId || "",
+              rarity: imported.rarity || "",
+              image: imported.image || "",
+              price: Number(imported.price) || 0,
+              dateAdded: imported.dateAdded || Date.now()
+            });
+            wantlistAdded++;
+          });
+
+          saveWantlist(wantlist);
+        }
+
         renderPortfolio();
+        renderWantlist();
         closeSettingsModal();
-        showToast(`Importação concluída: ${added} nova(s), ${merged} juntada(s).`, "success");
+
+        const wantlistSuffix = wantlistAdded > 0 ? `, ${wantlistAdded} na wantlist` : "";
+        showToast(`Importação concluída: ${added} nova(s), ${merged} juntada(s)${wantlistSuffix}.`, "success");
 
       } catch (error) {
         console.error(error);
@@ -1175,6 +1376,7 @@ function handleCollectionSort() {
 ===================================================== */
 
 renderPortfolio();
+renderWantlist();
 
 </script>
 
