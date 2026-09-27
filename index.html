@@ -215,6 +215,10 @@
 
   /* WANTLIST */
   .wantlist-box { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 14px; }
+  .wantlist-search-box {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 18px;
+    padding: 16px; margin-bottom: 16px;
+  }
   .wantlist-actions { display: flex; gap: 8px; margin-top: 8px; }
   .buy-button {
     flex: 1; padding: 9px 10px; border: none; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -486,6 +490,40 @@
 
     <h2 class="section-title title-with-icon"><span id="icon-wantlisttitle"></span> Wantlist</h2>
 
+    <section class="wantlist-search-box">
+      <h3 class="title-with-icon" id="wantlist-search-heading" style="margin-bottom:10px;"></h3>
+      <input
+        type="text"
+        class="search-input"
+        id="wantlist-card-search"
+        placeholder="Ex: Charizard ex"
+        autocomplete="off"
+        style="margin-top:0;"
+      >
+      <button class="search-button btn-with-icon" id="wantlist-search-button" onclick="searchCard('wantlist-card-search','wantlist-search-results')"></button>
+      <div id="wantlist-search-results"></div>
+    </section>
+
+    <div class="collection-toolbar" id="wantlist-toolbar" style="display:none;">
+      <input
+        type="text"
+        class="search-input"
+        id="wantlist-filter-search"
+        placeholder="Procurar na minha wantlist"
+        autocomplete="off"
+        oninput="handleWantlistFilterSearch()"
+      >
+      <select class="form-select" id="wantlist-sort" onchange="handleWantlistSort()">
+        <option value="default">Ordem original</option>
+        <option value="name-asc">Nome A-Z</option>
+        <option value="name-desc">Nome Z-A</option>
+        <option value="price-desc">Preço: maior → menor</option>
+        <option value="price-asc">Preço: menor → maior</option>
+        <option value="recent">Mais recentes primeiro</option>
+        <option value="oldest">Mais antigas primeiro</option>
+      </select>
+    </div>
+
     <section class="wantlist-box" id="wantlist-section">
       <div class="empty">
         <div class="empty-icon" id="icon-emptywantlist"></div>
@@ -632,6 +670,9 @@ function renderStaticIcons() {
   document.getElementById("icon-wantlisttitle").innerHTML = icon("heart", 19);
   document.getElementById("icon-emptywantlist").innerHTML = icon("heart", 38);
 
+  document.getElementById("wantlist-search-heading").innerHTML = icon("search", 17) + " Adicionar à wantlist";
+  document.getElementById("wantlist-search-button").innerHTML = icon("search", 17) + " Procurar carta";
+
   document.getElementById("icon-bannerbutton").innerHTML = icon("pencil", 16);
   document.getElementById("icon-avatar").innerHTML = icon("user", 30);
   document.getElementById("icon-loginbtn").innerHTML = icon("lock", 14);
@@ -649,6 +690,10 @@ function renderStaticIcons() {
 /* Estado da pesquisa/ordenação da coleção (não persistido) */
 let collectionSearchTerm = "";
 let collectionSortOrder = "default";
+
+/* Estado da pesquisa/ordenação dentro da própria wantlist (não persistido) */
+let wantlistSearchTerm = "";
+let wantlistSortOrder = "default";
 
 /* Estado do gráfico e cache do histórico já ordenado (não persistido) */
 let chartRange = "7d";
@@ -852,9 +897,12 @@ function closeScanner() {
    PESQUISAR CARTA
 ===================================================== */
 
-async function searchCard() {
-  const input = document.getElementById("card-search");
-  const results = document.getElementById("search-results");
+async function searchCard(inputId, resultsId) {
+  inputId = inputId || "card-search";
+  resultsId = resultsId || "search-results";
+
+  const input = document.getElementById(inputId);
+  const results = document.getElementById(resultsId);
   if (!input || !results) return;
 
   const name = input.value.trim();
@@ -895,7 +943,7 @@ async function searchCard() {
         </div>
       `;
 
-      cardElement.onclick = () => loadCard(card.id);
+      cardElement.onclick = () => loadCard(card.id, resultsId);
       results.appendChild(cardElement);
     });
 
@@ -909,8 +957,9 @@ async function searchCard() {
    CARREGAR CARTA
 ===================================================== */
 
-async function loadCard(cardId) {
-  const results = document.getElementById("search-results");
+async function loadCard(cardId, resultsId) {
+  resultsId = resultsId || "search-results";
+  const results = document.getElementById(resultsId);
   if (!results) return;
 
   results.innerHTML = `<p style="margin-top:15px;">A carregar informação da carta...</p>`;
@@ -1090,9 +1139,12 @@ function buyWantlistCard(cardId) {
 function renderWantlist() {
   const wantlist = getWantlist();
   const container = document.getElementById("wantlist-section");
+  const toolbar = document.getElementById("wantlist-toolbar");
   if (!container) return;
 
   if (wantlist.length === 0) {
+    if (toolbar) toolbar.style.display = "none";
+
     container.innerHTML = `
       <div class="empty">
         <div class="empty-icon">${icon("heart", 38)}</div>
@@ -1103,9 +1155,31 @@ function renderWantlist() {
     return;
   }
 
+  if (toolbar) toolbar.style.display = "flex";
+
+  let visibleCards = wantlist.filter(card => {
+    if (!wantlistSearchTerm) return true;
+    const name = (card.name || "").toLowerCase();
+    const set = (card.set || "").toLowerCase();
+    return name.includes(wantlistSearchTerm) || set.includes(wantlistSearchTerm);
+  });
+
+  visibleCards = sortCards(visibleCards, wantlistSortOrder);
+
+  if (visibleCards.length === 0) {
+    container.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">${icon("search", 38)}</div>
+        <p>Nenhuma carta encontrada com esses critérios.</p>
+      </div>
+    `;
+    renderProfileStats();
+    return;
+  }
+
   container.innerHTML = "";
 
-  wantlist.forEach(card => {
+  visibleCards.forEach(card => {
     const image = card.image ? card.image + "/low.webp" : "";
 
     const cardElement = document.createElement("div");
@@ -1130,6 +1204,18 @@ function renderWantlist() {
   });
 
   renderProfileStats();
+}
+
+function handleWantlistFilterSearch() {
+  const input = document.getElementById("wantlist-filter-search");
+  wantlistSearchTerm = input ? input.value.trim().toLowerCase() : "";
+  renderWantlist();
+}
+
+function handleWantlistSort() {
+  const select = document.getElementById("wantlist-sort");
+  wantlistSortOrder = select ? select.value : "default";
+  renderWantlist();
 }
 
 /* =====================================================
